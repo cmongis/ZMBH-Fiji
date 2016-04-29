@@ -13,15 +13,12 @@ import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
-import net.imagej.display.ImageDisplayService;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.numeric.RealType;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
-import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -34,19 +31,10 @@ import org.scijava.ui.UIService;
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>CMD readMatFile_displayMask", label="")
-public class CommandTester_matFile_mask implements Command {
-    
-    @Parameter
-    CommandService commandService;
+public class LoadSegmentationMaskCommand implements Command {
     
     @Parameter
     DatasetService datasetService;
-    
-    @Parameter
-    ImageDisplayService imagedisplayService;
-    
-    @Parameter
-    UIService uiService;
     
     @Parameter(type = ItemIO.INPUT)
     File maskFile;
@@ -91,7 +79,7 @@ public class CommandTester_matFile_mask implements Command {
                 }
             }  
         } catch (IOException ex) {
-            Logger.getLogger(CommandTester_matFile_mask.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadSegmentationMaskCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
     }   
 }
