@@ -30,7 +30,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD readMatFile_displayMask", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Load segmentation mask (CellX)", label="")
 public class LoadSegmentationMaskCommand implements Command {
     
     @Parameter

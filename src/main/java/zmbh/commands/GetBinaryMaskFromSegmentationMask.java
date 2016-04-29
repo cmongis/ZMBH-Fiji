@@ -24,8 +24,8 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Make Binary", label="")
-public class makeBinary implements Command {
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Get binary mask from segmentation mask", label="")
+public class GetBinaryMaskFromSegmentationMask implements Command {
     
     @Parameter
     CommandService commandService;
@@ -66,7 +66,7 @@ public class makeBinary implements Command {
             }
             
         } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(makeBinary.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(GetBinaryMaskFromSegmentationMask.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
 }

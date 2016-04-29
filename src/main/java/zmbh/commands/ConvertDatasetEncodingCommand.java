@@ -20,7 +20,7 @@ import zmbh.services.ConvertDatasetEncodingService;
  */
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD convert encoding")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Convert encoding")
 public class ConvertDatasetEncodingCommand implements Command {
     
     @Parameter

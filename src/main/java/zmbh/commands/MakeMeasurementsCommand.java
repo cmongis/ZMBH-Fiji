@@ -29,8 +29,8 @@ import org.scijava.plugin.Plugin;
  * * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD find Blobs", label="")
-public class Commandtester_findBlobs implements Command {
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Get measurements", label="")
+public class MakeMeasurementsCommand implements Command {
 
     @Parameter
     DatasetService datasetService;
@@ -41,11 +41,14 @@ public class Commandtester_findBlobs implements Command {
     @Parameter(type = ItemIO.INPUT)
     Dataset maskDataset;
     
+    @Parameter()
+    int sliceNumber;
+    
     @Parameter(type = ItemIO.INPUT)
     File saveDir;
     
-    @Parameter
-    ImageDisplay imgDisplay;
+    //@Parameter
+    //ImageDisplay imgDisplay;
     
     @Override
     public void run() {
@@ -57,10 +60,10 @@ public class Commandtester_findBlobs implements Command {
         Analyzer analyzer = new Analyzer();     
         ImagePlus datasetImp = ImageJ1PluginAdapter.unwrapDataset(dataset);
         
-        long[] position = new long[imgDisplay.numDimensions()];
-        imgDisplay.localize(position);
-        datasetImp.setPosition((int) position[2]+1, 1, 1);
-        
+        //long[] position = new long[imgDisplay.numDimensions()];
+        //imgDisplay.localize(position);
+        //datasetImp.setPosition((int) position[2]+1, 1, 1);
+        datasetImp.setPosition(sliceNumber+1, 1, 1);
         analyzer.setup("", datasetImp);
             
         Analyzer.setMeasurement(Measurements.AREA, true);
@@ -108,10 +111,16 @@ public class Commandtester_findBlobs implements Command {
         }
         
         try {
-            resultTable.saveAs(saveDir.getPath() + "\\" + dataset.getName()+ (position[2]+1) + ".csv");
+            //try {
+            //    resultTable.saveAs(saveDir.getPath() + "\\" + dataset.getName()+ (position[2]+1) + ".csv");
+            //} catch (IOException ex) {
+            //    Logger.getLogger(Commandtester_findBlobs.class.getName()).log(Level.SEVERE, null, ex);
+            //}
+            resultTable.saveAs(saveDir.getPath() + "\\records" + dataset.getName().split("\\.")[0]+ "_slice" +(sliceNumber+1) + ".csv");
         } catch (IOException ex) {
-            Logger.getLogger(Commandtester_findBlobs.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MakeMeasurementsCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
         
         resultTable.reset();    
     }   

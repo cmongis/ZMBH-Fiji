@@ -22,8 +22,8 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD START Process", label="")
-public class Process implements Command {
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Get measurements all slices (all dir)", label="")
+public class MakeMeasurementsCommand_AllSlices_AllDir implements Command {
 
     @Parameter
     CommandService commandService;
@@ -62,7 +62,7 @@ public class Process implements Command {
             
             if(inputStackFileList.length == masksFileList.length){
                 for(int i = 0; i < inputStackFileList.length; i++){
-                    promise = commandService.run(WorkFlow.class, true,
+                    promise = commandService.run(MakeMeasurementsCommand_AllSlices.class, true,
                             "inputStackFile", inputStackFileList[i],
                             "maskFile", masksFileList[i],
                             "targetType", targetType,
@@ -75,9 +75,9 @@ public class Process implements Command {
                     try {
                         promise.get();
                     } catch (InterruptedException ex) {
-                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(MakeMeasurementsCommand_AllSlices_AllDir.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (ExecutionException ex) {
-                        Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(MakeMeasurementsCommand_AllSlices_AllDir.class.getName()).log(Level.SEVERE, null, ex);
                     }                   
                 }
             }
