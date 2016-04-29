@@ -18,8 +18,8 @@ import org.scijava.plugin.Plugin;
 
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>COMMAND Extract brightField", label="")
-public class CommandTester_extract_brightfield implements Command {
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Extract slice", label="")
+public class ExtractSliceCommand implements Command {
     
     @Parameter
     DatasetService datasetService;   
@@ -27,8 +27,12 @@ public class CommandTester_extract_brightfield implements Command {
     @Parameter(type = ItemIO.INPUT)
     Dataset inputDataset;
     
+    @Parameter(type = ItemIO.INPUT)
+    int sliceNumber;
+    
     @Parameter(type = ItemIO.OUTPUT)
     Dataset outputDataset;
+    
     
     @Override
     public void run() {
@@ -37,12 +41,14 @@ public class CommandTester_extract_brightfield implements Command {
         dimensions[0] = inputDataset.dimension(0);
         dimensions[1] = inputDataset.dimension(1);
         String inputDatasetName = inputDataset.getName();
+        String[] split = inputDatasetName.split("\\.");
+        String outputDatasetName = split[0] + "_slice" + sliceNumber + "." + split[1];
         AxisType[] axisArray = new AxisType[]{Axes.X, Axes.Y};
-        outputDataset = datasetService.create(dimensions, inputDatasetName, axisArray, inputDataset.getType().getBitsPerPixel(), inputDataset.isSigned(), !inputDataset.isInteger());
+        outputDataset = datasetService.create(dimensions, outputDatasetName, axisArray, inputDataset.getType().getBitsPerPixel(), inputDataset.isSigned(), !inputDataset.isInteger());
         RandomAccess<RealType<?>> inputRandomAccess = inputDataset.randomAccess();
         RandomAccess<RealType<?>> outputRandomAccess = outputDataset.randomAccess();
 
-        inputRandomAccess.setPosition(new long[]{0, 0, 6});
+        inputRandomAccess.setPosition(new long[]{0, 0, sliceNumber});
         outputRandomAccess.setPosition(new long[]{0, 0});
 
         for(int x = 0; x < dimensions[0]; x++){
@@ -55,7 +61,6 @@ public class CommandTester_extract_brightfield implements Command {
 
                 outputRandomAccess.get().setReal(inputRandomAccess.get().getRealFloat());
             }
-        }
-        
+        }       
     }
 }
