@@ -6,13 +6,17 @@
 package zmbh.commands;
 
 import ij.ImagePlus;
+import ij.blob.Blob;
+import ij.blob.ManyBlobs;
 import ij.gui.OvalRoi;
+import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.Animator;
 import ij.plugin.Zoom;
 import ij.plugin.frame.RoiManager;
 import ij.process.ImageProcessor;
 import io.scif.services.DatasetIOService;
+import java.awt.Polygon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,6 +33,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.imagej.Dataset;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -66,6 +72,9 @@ public class HumanEyeValidation implements Command {
     String stackDirPath;
     
     @Parameter(type = ItemIO.INPUT)
+    String maskDirPath;
+    
+    @Parameter(type = ItemIO.INPUT)
     String eyeValidationOutDir;
     
     @Override
@@ -73,7 +82,7 @@ public class HumanEyeValidation implements Command {
         
         try {
             
-            Reader in = new FileReader(recordFile.getPath());     
+            Reader in = new FileReader(recordFile.getPath());
             CSVFormat csvFileFormat = CSVFormat.DEFAULT.withHeader("index","Label", "Area", "Mean", "StdDev", "Mode",
                     "Min", "Max", "X", "Y", "XM" ,"YM", "Perim.", "BX", "BY", "Width", "Height", "Major",
                     "Minor", "Angle", "Circ.", "Feret", "IntDen", "Median", "Skew", "Kurt", "X.Area", "RawIntDen", "Slice", "FeretX",
@@ -97,6 +106,8 @@ public class HumanEyeValidation implements Command {
             }
             
             Random random = new Random();
+            Future<CommandModule> promise;
+            CommandModule promiseContent;
             
             //for(MyCellRecord record:cellRecordList){
             for(int i = 0; i < cellRecordList.size(); i++){
@@ -109,7 +120,42 @@ public class HumanEyeValidation implements Command {
                 String[] split = record.getLabel().split(":");
                 String imageFile = split[0];
                 int sliceNumber = Integer.parseInt(split[1]);
+                
+                Pattern pattern = Pattern.compile(".*(\\d{4}).*(\\d{4}).*(\\d{1})");
+                Matcher matcher = pattern.matcher(record.getLabel());
 
+                matcher.find();
+                String pointNumber = matcher.group(1);
+                String seqNumber = matcher.group(2);
+                
+                String maskFileName = "mask_0" + seqNumber + ".mat";
+                File maskFile = new File(maskDirPath + "/" + maskFileName);
+                
+                promise = commandService.run(LoadSegmentationMaskCommand.class, true, "maskFile", maskFile);
+                promiseContent = promise.get();
+                Dataset inputMaskDataset = (Dataset) promiseContent.getOutput("maskDataset");
+
+                promise = commandService.run(GetBinaryMaskFromSegmentationMask.class, true, "inDataset", inputMaskDataset);
+                promiseContent = promise.get();
+                Dataset binaryMaskDataset = (Dataset) promiseContent.getOutput("outDataset");
+                
+                ImagePlus maskImp = ImageJ1PluginAdapter.unwrapDataset(binaryMaskDataset);
+                ManyBlobs allBlobs = new ManyBlobs(maskImp);
+                allBlobs.findConnectedComponents();
+                System.out.println(allBlobs.size());
+                Blob specificBlob = allBlobs.getSpecificBlob((int) record.getX(), (int)record.getY());
+
+                Polygon p = specificBlob.getOuterContour();
+                int n = p.npoints;
+                float[] x = new float[p.npoints];
+                float[] y = new float[p.npoints]; 
+
+                for (int j=0; j<n; j++) {
+                    x[j] = p.xpoints[j]+0.5f;
+                    y[j] = p.ypoints[j]+0.5f;
+                }
+                Roi roi = new PolygonRoi(x,y,n,Roi.POLYGON);
+                
                 Dataset dataset = ioService.open(stackDirPath + "/" + imageFile);
                 uiService.show(dataset);
 
@@ -128,7 +174,7 @@ public class HumanEyeValidation implements Command {
                 if (roiManager == null)
                     roiManager = new RoiManager();
 
-                Roi roi = new OvalRoi(record.getX()-25, record.getY()-25, 50, 50);
+                //Roi roi = new OvalRoi(record.getX()-25, record.getY()-25, 50, 50);
 
                 roiManager.addRoi(roi);
                 roiManager.select(0);
@@ -152,8 +198,8 @@ public class HumanEyeValidation implements Command {
                 }
                 ca.done = true;
                 ca.close();
-                Future<CommandModule> promise = commandService.run(HumanEyeValidationWindow.class, true);
-                CommandModule promiseContent = promise.get();
+                promise = commandService.run(HumanEyeValidationWindow.class, true);
+                promiseContent = promise.get();
 
                 boolean dead = (boolean) promiseContent.getOutput("outdead");
                 boolean overlap = (boolean) promiseContent.getOutput("outoverlap");

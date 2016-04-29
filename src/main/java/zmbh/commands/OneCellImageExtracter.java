@@ -125,7 +125,7 @@ public class OneCellImageExtracter implements Command {
                 promise = commandService.run(ConvertDatasetEncodingCommand.class, true, "inDataset", inputDataset, "targetType", targetType);
                 promiseContent = promise.get();
                 inputDataset = (Dataset) promiseContent.getOutput("outDataset");
-                promise = commandService.run(CommandTester_flatfield.class, true, "inputDataset", inputDataset, "darkfieldValue", darkfieldValue, "mCherryFlatFieldFile", mCherryFlatFieldFile, "gfpFlatFieldFile", gfpFlatFieldFile, "bfpFlatFieldFile", bfpFlatFieldFile);
+                promise = commandService.run(SlideCorrectCommand_DarkField_FlatField_AllSlices.class, true, "inputDataset", inputDataset, "darkfieldValue", darkfieldValue, "mCherryFlatFieldFile", mCherryFlatFieldFile, "gfpFlatFieldFile", gfpFlatFieldFile, "bfpFlatFieldFile", bfpFlatFieldFile);
                 promiseContent = promise.get();
                 inputDataset = (Dataset) promiseContent.getOutput("inputDataset");
                 

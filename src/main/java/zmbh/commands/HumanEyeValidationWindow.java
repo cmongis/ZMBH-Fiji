@@ -16,7 +16,7 @@ import org.scijava.plugin.Plugin;
  */
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD HumanEye Validation window", label="")
+@Plugin(type = Command.class, label="")
 public class HumanEyeValidationWindow implements Command {
     
     
