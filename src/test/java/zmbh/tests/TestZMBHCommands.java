@@ -1,3 +1,5 @@
+package zmbh.tests;
+
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,10 +22,13 @@ public class TestZMBHCommands extends BaseSciJavaTest{
     CommandService cmdService;
     
     @Test
-    public void testRunCommand() {        
+    public void testCmdService() {        
         Assert.assertNotNull("cmdService should not be null", cmdService);   
     }
             
-    
+    @Test
+    public void testConvertDatasetEncodingCommand(){
+        
+    }
     
 }

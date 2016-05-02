@@ -1,8 +1,8 @@
+package zmbh.tests;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.BeforeClass;
-import org.scijava.Context;
 import org.scijava.SciJava;
 import org.scijava.plugin.PluginInfo;
 import org.scijava.service.Service;
