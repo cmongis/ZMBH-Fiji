@@ -16,7 +16,7 @@ import org.scijava.plugin.Plugin;
  */
 
 
-@Plugin(type = Command.class, label="")
+@Plugin(type = Command.class)
 public class HumanEyeValidationWindow implements Command {
     
     

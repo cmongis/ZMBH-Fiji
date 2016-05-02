@@ -8,7 +8,6 @@ package zmbh.commands;
 import ij.ImagePlus;
 import ij.blob.Blob;
 import ij.blob.ManyBlobs;
-import ij.gui.OvalRoi;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.Animator;
@@ -33,8 +32,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import net.imagej.Dataset;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -90,7 +87,6 @@ public class HumanEyeValidation implements Command {
                     "Well", "WellNumber", "WellLabel");
             
             CSVParser csvFileParser = new CSVParser(in, csvFileFormat);
-            //Iterable<CSVRecord> records = CSVFormat.EXCEL.parse(in);
             List<CSVRecord> records = csvFileParser.getRecords();
             records.remove(0);
             List<MyCellRecord> cellRecordList  = new ArrayList<>();
@@ -109,7 +105,6 @@ public class HumanEyeValidation implements Command {
             Future<CommandModule> promise;
             CommandModule promiseContent;
             
-            //for(MyCellRecord record:cellRecordList){
             for(int i = 0; i < cellRecordList.size(); i++){
             
                 int randInt = random.nextInt(availableRecords.size());
@@ -121,14 +116,9 @@ public class HumanEyeValidation implements Command {
                 String imageFile = split[0];
                 int sliceNumber = Integer.parseInt(split[1]);
                 
-                Pattern pattern = Pattern.compile(".*(\\d{4}).*(\\d{4}).*(\\d{1})");
-                Matcher matcher = pattern.matcher(record.getLabel());
-
-                matcher.find();
-                String pointNumber = matcher.group(1);
-                String seqNumber = matcher.group(2);
-                
-                String maskFileName = "mask_0" + seqNumber + ".mat";
+                String maskFileName = imageFile.split("\\.")[0] + ".mat";
+                System.out.println(record.getLabel());
+                System.out.println(maskFileName);
                 File maskFile = new File(maskDirPath + "/" + maskFileName);
                 
                 promise = commandService.run(LoadSegmentationMaskCommand.class, true, "maskFile", maskFile);
@@ -138,6 +128,8 @@ public class HumanEyeValidation implements Command {
                 promise = commandService.run(GetBinaryMaskFromSegmentationMask.class, true, "inDataset", inputMaskDataset);
                 promiseContent = promise.get();
                 Dataset binaryMaskDataset = (Dataset) promiseContent.getOutput("outDataset");
+                
+                System.out.println(binaryMaskDataset);     
                 
                 ImagePlus maskImp = ImageJ1PluginAdapter.unwrapDataset(binaryMaskDataset);
                 ManyBlobs allBlobs = new ManyBlobs(maskImp);
@@ -159,9 +151,6 @@ public class HumanEyeValidation implements Command {
                 Dataset dataset = ioService.open(stackDirPath + "/" + imageFile);
                 uiService.show(dataset);
 
-                //Future<CommandModule> promise = commandService.run(SetAxisPosition.class, true, "oneBasedPosition", sliceNumber);
-                //promise.get();
-
                 Animator animator = new Animator();
                 for(int j = 1; j < 7; j ++){
                     animator.run("next");
@@ -174,8 +163,6 @@ public class HumanEyeValidation implements Command {
                 if (roiManager == null)
                     roiManager = new RoiManager();
 
-                //Roi roi = new OvalRoi(record.getX()-25, record.getY()-25, 50, 50);
-
                 roiManager.addRoi(roi);
                 roiManager.select(0);
 
@@ -185,10 +172,6 @@ public class HumanEyeValidation implements Command {
                 zoom.run("out");
                 zoom.run("out");
                 zoom.run("out");
-                //zoom.run("out");
-
-                //IJ.run("Enhance Contrast", "saturated=0.5");
-                //ContrastAdjuster oldCA = new ContrastAdjuster();
 
                 MyContrastAjuster ca = new MyContrastAjuster();
                 ca.run("");
@@ -207,29 +190,22 @@ public class HumanEyeValidation implements Command {
                 boolean good = (boolean) promiseContent.getOutput("outgood");
                 boolean stop = (boolean) promiseContent.getOutput("outstop");
                 
-                
-                if(stop){
-                    ij.WindowManager.closeAllWindows();
-                    break;
-                }
-                
                 record.setDead(dead);
                 record.setOverlap(overlap);
                 record.setOutfocus(outfocus);
                 record.setGood(good);
-                record.setValidated(true);
-            
-                //System.out.println(dead + " " + overlap + " " +outfocus + " " + good);
+                record.setValidated(true);          
 
                 roiManager.deselect(roi);
                 roiManager.removeAll();
 
                 System.out.println(i);
                 ij.WindowManager.closeAllWindows();
-
+                
+                if(stop){
+                    break;
+                }
             }
-            
-            
             
             Writer writer = new FileWriter(eyeValidationOutDir + "/" + recordFile.getName() + "_validated.csv");
             
