@@ -22,6 +22,7 @@ public class BaseSciJavaTest {
     
     public static SciJava scijava;
     
+    
     public BaseSciJavaTest(){
         if(scijava == null) {
             System.out.println("Initializing SCIJAVA");
@@ -40,9 +41,39 @@ public class BaseSciJavaTest {
             }           
             scijava = new SciJava(toLoad);
             System.out.println("Loading " + toLoad.size() + " services");
-            scijava.getContext().inject(this);
-            System.out.println("Injection OK");
+            
         }
+        scijava.getContext().inject(this);
+        //System.out.println("Injection OK");
     }
-      
+    
+    /*
+    public static SciJava getSciJava(){
+        if(scijava == null) {
+            System.out.println("Initializing SCIJAVA");
+            
+            // avoid error : Invalid service: net.imagej.legacy.LegacyConsoleService
+            scijava = new SciJava(true); 
+            List<PluginInfo<Service>> availableServices = scijava.getContext().getPluginIndex().getPlugins(Service.class);
+            List<Class<? extends Service>> toLoad = new ArrayList<>();
+            for(PluginInfo<Service> plinfo : availableServices){
+                if(plinfo.getPluginClass() != null){
+                    if(!plinfo.getClassName().contains("legacy")){
+                        toLoad.add(plinfo.getPluginClass());
+                        //System.out.println(plinfo.getPluginClass());
+                    }
+                }
+            }           
+            scijava = new SciJava(toLoad);
+            System.out.println("Loading " + toLoad.size() + " services");
+            
+        }
+        return scijava;
+    }
+    
+    public void init(){
+        getSciJava().getContext().inject(this);
+        System.out.println("Injection OK");
+    }
+    */
 }
