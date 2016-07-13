@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package config;
+package zmbh.config;
 
 import java.io.IOException;
 import javafx.application.Application;

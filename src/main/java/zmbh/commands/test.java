@@ -6,7 +6,7 @@
 package zmbh.commands;
 
 import bunwarpj.bUnwarpJ_;
-import config.LoadJSON2;
+import zmbh.config.LoadJSON2;
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;

@@ -3,13 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package config;
+package zmbh.config;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mapdb.Atomic.Integer;
+import org.mapdb.Atomic.String;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
@@ -21,22 +26,22 @@ import org.scijava.plugin.Plugin;
  */
 
 @Plugin(type = Command.class)
-public class LoadJSON implements Command {
+public class LoadJSON2 implements Command {
     
     @Parameter(type = ItemIO.INPUT)
     File jsonFile;
     
     @Parameter(type = ItemIO.OUTPUT)
-    StructureInfo outObject;
+    Map<String, Map<String, Integer>> outObject;
     
     @Override
     public void run() {
         
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            outObject  = objectMapper.readValue(jsonFile, StructureInfo.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            outObject  = objectMapper.readValue(jsonFile, Map.class);
         } catch (IOException ex) {
-            Logger.getLogger(LoadJSON.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(LoadJSON2.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
