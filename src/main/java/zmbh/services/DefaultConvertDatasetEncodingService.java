@@ -38,7 +38,7 @@ public class DefaultConvertDatasetEncodingService extends AbstractService implem
     @Override
     public Dataset convert(Dataset inputDataset, DataType targetEncoding) {
         Dataset outputDataset = null;
-        System.out.println("Input dataset encoding: " + inputDataset.getTypeLabelLong());
+        //System.out.println("Input dataset encoding: " + inputDataset.getTypeLabelLong());
         
         long[] dimensions = new long[inputDataset.numDimensions()];
         AxisType[] axisTypeArray = new AxisType[inputDataset.numDimensions()];
@@ -46,16 +46,22 @@ public class DefaultConvertDatasetEncodingService extends AbstractService implem
             dimensions[i] = inputDataset.dimension(i);
             axisTypeArray[i] = inputDataset.axis(i).type();
         }
-        System.out.println("Input dataset dimensions: " + Arrays.toString(dimensions));
-        System.out.println("Output dataset encoding: " + targetEncoding.longName());
+        //System.out.println("Input dataset dimensions: " + Arrays.toString(dimensions));
+        //System.out.println("Output dataset encoding: " + targetEncoding.longName());
         String inputDatasetName = inputDataset.getName();
         String convertedDatasetName = "new_" + inputDatasetName;
-        System.out.println("Output dataset name: " + convertedDatasetName);
-        System.out.println("Output type bitCount: " + targetEncoding.bitCount());
+        //System.out.println("Output dataset name: " + convertedDatasetName);
+        //System.out.println("Output type bitCount: " + targetEncoding.bitCount());
         //outputDataset = datasetService.create(dimensions, convertedDatasetName, axisTypeArray, targetEncoding.bitCount(), targetEncoding.isSigned(), targetEncoding.isFloat());
         outputDataset = datasetService.create(dimensions, inputDatasetName, axisTypeArray, targetEncoding.bitCount(), targetEncoding.isSigned(), targetEncoding.isFloat());
 
         DataType inputEncoding = dataTypeService.getTypeByName(inputDataset.getTypeLabelLong());
+        
+        double inMaxValue = inputDataset.getType().getMaxValue();
+        double inMinValue = inputDataset.getType().getMinValue();
+        
+        double outMaxValue = outputDataset.getType().getMaxValue();
+        double outMinValue = outputDataset.getType().getMinValue();
         
         Cursor<RealType<?>> inputDatasetCursor = inputDataset.cursor();
         Cursor<RealType<?>> targetDatasetCursor = outputDataset.cursor();
@@ -70,16 +76,42 @@ public class DefaultConvertDatasetEncodingService extends AbstractService implem
             counter++;
             inputDatasetCursor.next();
             targetDatasetCursor.next();
+            
+            
+            /*
+            double inOldValue = inputDatasetCursor.get().getRealDouble();
+            double scaleInOldValue = inOldValue - inMinValue;
+            double scaleInMaxvalue = inMaxValue - inMinValue;
+            double normInOldValue = scaleInOldValue / scaleInMaxvalue;
+            
+            System.out.println(Float.MAX_VALUE);
+            System.out.println(inMinValue);
+            System.out.println(inOldValue);
+            
+            System.out.println(scaleInOldValue);
+            
+            System.out.println(scaleInMaxvalue);
+            System.out.println(normInOldValue);
+            System.out.println("");
+            
+            
+            double scaleOutMaxValue = outMaxValue - outMinValue;
+            double scaleOutNewValue = normInOldValue * scaleOutMaxValue;
+            double outNewValue = scaleOutNewValue + outMinValue;
+            */
+            
             inputCurrentPixel = inputDatasetCursor.get();
             outputCurrentPixel = (RealType) targetEncoding.getType().createVariable();
             
             inputEncoding.cast((NumericType) inputCurrentPixel, tmp);
             targetEncoding.cast(tmp, (NumericType) outputCurrentPixel);
-            targetDatasetCursor.get().setReal(outputCurrentPixel.getRealDouble());        
+            targetDatasetCursor.get().setReal(outputCurrentPixel.getRealDouble()); 
+            
+            //targetDatasetCursor.get().setReal(outNewValue);    
         }
 
-        System.out.println("Elements processed: " + counter);
-        System.out.println("CONVERT PASSED");       
+        //System.out.println("Elements processed: " + counter);
+        //System.out.println("CONVERT PASSED");       
         return outputDataset;
     }
 }

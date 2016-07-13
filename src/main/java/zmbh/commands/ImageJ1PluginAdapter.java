@@ -70,7 +70,7 @@ public abstract class ImageJ1PluginAdapter implements Command{
     }
     
     public Dataset wrapDataset(ImagePlus imp) {
-         Img img = ImageJFunctions.wrap(imp);
+        Img img = ImageJFunctions.wrap(imp);
         return service.create(img);
     }
     

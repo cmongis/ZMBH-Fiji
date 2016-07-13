@@ -90,7 +90,7 @@ public class MyContrastAjuster extends PlugInDialog implements Runnable,
 	boolean doAutoAdjust,doReset,doSet,doApplyLut;
 	
 	Panel panel, tPanel;
-	Button autoB, resetB, setB, applyB;
+	public Button autoB, resetB, setB, applyB;
 	int previousImageID;
 	int previousType;
 	int previousSlice = 1;
@@ -102,7 +102,7 @@ public class MyContrastAjuster extends PlugInDialog implements Runnable,
 	boolean RGBImage;
 	Scrollbar minSlider, maxSlider, contrastSlider, brightnessSlider;
 	Label minLabel, maxLabel, windowLabel, levelLabel;
-	boolean done;
+	public boolean done;
 	int autoThreshold;
 	GridBagLayout gridbag;
 	GridBagConstraints c;
@@ -295,6 +295,186 @@ public class MyContrastAjuster extends PlugInDialog implements Runnable,
 		thread.start();
 		setup();
 	}
+        
+        public void run(String arg, ImagePlus imp) {
+		windowLevel = arg.equals("wl");
+		balance = arg.equals("balance");
+		if (windowLevel)
+			setTitle("W&L");
+		else if (balance) {
+			setTitle("Color");
+			channels = 4;
+		}
+
+		if (instance!=null) {
+			if (!instance.getTitle().equals(getTitle())) {
+				MyContrastAjuster ca = instance;
+				Prefs.saveLocation(LOC_KEY, ca.getLocation());
+				ca.close();
+			} else {
+				instance.toFront();
+				return;
+			}
+		}
+		instance = this;
+		IJ.register(MyContrastAjuster.class);
+		WindowManager.addWindow(this);
+
+		ij = IJ.getInstance();
+		gridbag = new GridBagLayout();
+		c = new GridBagConstraints();
+		setLayout(gridbag);
+		
+		// plot
+		c.gridx = 0;
+		y = 0;
+		c.gridy = y++;
+		c.fill = GridBagConstraints.BOTH;
+		c.anchor = GridBagConstraints.CENTER;
+		c.insets = new Insets(10, 10, 0, 10);
+		gridbag.setConstraints(plot, c);
+		add(plot);
+		plot.addKeyListener(ij);		
+		// min and max labels
+		
+		if (!windowLevel) {
+			panel = new Panel();
+			c.gridy = y++;
+			c.insets = new Insets(0, 10, 0, 10);
+			gridbag.setConstraints(panel, c);
+			panel.setLayout(new BorderLayout());
+			minLabel = new Label(blankMinLabel, Label.LEFT);
+			minLabel.setFont(monoFont);
+			if (IJ.debugMode) minLabel.setBackground(Color.yellow);
+			panel.add("West", minLabel);
+			maxLabel = new Label(blankMaxLabel, Label.RIGHT);
+			maxLabel.setFont(monoFont);
+			if (IJ.debugMode) maxLabel.setBackground(Color.yellow);
+			panel.add("East", maxLabel);
+			add(panel);
+			blankMinLabel = "       ";
+			blankMaxLabel = "        ";
+		}
+
+		// min slider
+		if (!windowLevel) {
+			minSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange/2, 1, 0, sliderRange);
+			GUI.fix(minSlider);
+			c.gridy = y++;
+			c.insets = new Insets(2, 10, 0, 10);
+			gridbag.setConstraints(minSlider, c);
+			add(minSlider);
+			minSlider.addAdjustmentListener(this);
+			minSlider.addKeyListener(ij);		
+			minSlider.setUnitIncrement(1);
+			minSlider.setFocusable(false); // prevents blinking on Windows
+			addLabel("Minimum", null);
+		}
+
+		// max slider
+		if (!windowLevel) {
+			maxSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange/2, 1, 0, sliderRange);
+			GUI.fix(maxSlider);
+			c.gridy = y++;
+			c.insets = new Insets(2, 10, 0, 10);
+			gridbag.setConstraints(maxSlider, c);
+			add(maxSlider);
+			maxSlider.addAdjustmentListener(this);
+			maxSlider.addKeyListener(ij);		
+			maxSlider.setUnitIncrement(1);
+			maxSlider.setFocusable(false);
+			addLabel("Maximum", null);
+		}
+		
+		// brightness slider
+		brightnessSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange/2, 1, 0, sliderRange);
+		GUI.fix(brightnessSlider);
+		c.gridy = y++;
+		c.insets = new Insets(windowLevel?12:2, 10, 0, 10);
+		gridbag.setConstraints(brightnessSlider, c);
+		add(brightnessSlider);
+		brightnessSlider.addAdjustmentListener(this);
+		brightnessSlider.addKeyListener(ij);		
+		brightnessSlider.setUnitIncrement(1);
+		brightnessSlider.setFocusable(false);
+		if (windowLevel)
+			addLabel("Level: ", levelLabel=new TrimmedLabel("        "));
+		else
+			addLabel("Brightness", null);
+			
+		// contrast slider
+		if (!balance) {
+			contrastSlider = new Scrollbar(Scrollbar.HORIZONTAL, sliderRange/2, 1, 0, sliderRange);
+			GUI.fix(contrastSlider);
+			c.gridy = y++;
+			c.insets = new Insets(2, 10, 0, 10);
+			gridbag.setConstraints(contrastSlider, c);
+			add(contrastSlider);
+			contrastSlider.addAdjustmentListener(this);
+			contrastSlider.addKeyListener(ij);		
+			contrastSlider.setUnitIncrement(1);
+			contrastSlider.setFocusable(false);
+			if (windowLevel)
+				addLabel("Window: ", windowLabel=new TrimmedLabel("        "));
+			else
+				addLabel("Contrast", null);
+		}
+
+		// color channel popup menu
+		if (balance) {
+			c.gridy = y++;
+			c.insets = new Insets(5, 10, 0, 10);
+			choice = new Choice();
+			addBalanceChoices();
+			gridbag.setConstraints(choice, c);
+			choice.addItemListener(this);
+			//choice.addKeyListener(ij);		
+			add(choice);
+		}
+	
+		// buttons
+		int trim = IJ.isMacOSX()?20:0;
+		panel = new Panel();
+		panel.setLayout(new GridLayout(0,2, 0, 0));
+		autoB = new TrimmedButton("Auto",trim);
+		autoB.addActionListener(this);
+		autoB.addKeyListener(ij);
+		panel.add(autoB);
+		resetB = new TrimmedButton("Reset",trim);
+		resetB.addActionListener(this);
+		resetB.addKeyListener(ij);
+		panel.add(resetB);
+		setB = new TrimmedButton("Set",trim);
+		setB.addActionListener(this);
+		setB.addKeyListener(ij);
+		panel.add(setB);
+		applyB = new TrimmedButton("Apply",trim);
+		applyB.addActionListener(this);
+		applyB.addKeyListener(ij);
+		panel.add(applyB);
+		c.gridy = y++;
+		c.insets = new Insets(8, 5, 10, 5);
+		gridbag.setConstraints(panel, c);
+		add(panel);
+		
+ 		addKeyListener(ij);  // ImageJ handles keyboard shortcuts
+		pack();
+		Point loc = Prefs.getLocation(LOC_KEY);
+		if (loc!=null)
+			setLocation(loc);
+		else
+			GUI.center(this);
+		if (IJ.isMacOSX()) setResizable(false);
+		//show();
+
+		thread = new Thread(this, "ContrastAdjuster");
+		//thread.setPriority(thread.getPriority()-1);
+		thread.start();
+		setup(imp);
+                updatePlot();
+                updateLabels(imp);                   
+                imp.updateAndDraw();
+	}
 		
 	void addBalanceChoices() {
 		ImagePlus imp = WindowManager.getCurrentImage();
@@ -335,6 +515,7 @@ public class MyContrastAjuster extends PlugInDialog implements Runnable,
 			imp.updateAndDraw();
 		}
 	}
+        
 	
 	public synchronized void adjustmentValueChanged(AdjustmentEvent e) {
 		Object source = e.getSource();
@@ -363,7 +544,7 @@ public class MyContrastAjuster extends PlugInDialog implements Runnable,
 		notify();
 	}
 	
-	ImageProcessor setup(ImagePlus imp) {
+	public ImageProcessor setup(ImagePlus imp) {
 		Roi roi = imp.getRoi();
 		if (roi!=null) roi.endPaste();
 		ImageProcessor ip = imp.getProcessor();

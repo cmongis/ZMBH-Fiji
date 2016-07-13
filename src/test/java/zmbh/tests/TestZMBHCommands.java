@@ -6,7 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
-import zmbh.commands.ConvertDatasetEncodingCommand;
+import zmbh.commands.util.ConvertDatasetEncodingCommand;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
