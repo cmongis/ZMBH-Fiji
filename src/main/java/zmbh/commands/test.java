@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
+import org.mapdb.Atomic;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;
@@ -25,6 +26,7 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.ui.UIService;
+import zmbh.config.Get4ImgStack;
 
 /**
  *
@@ -51,6 +53,9 @@ public class test implements Command {
     @Parameter
     UIService uiService;
     
+    @Parameter
+    File jsonFile;
+    
     
     @Override
     public void run() {
@@ -71,6 +76,9 @@ public class test implements Command {
             */
             //bUnwarpJ_ bUnwarpj = new bUnwarpJ_();
             //bUnwarpj.run("");
+            
+            
+            /*
             Future<CommandModule> promise = cmdService.run(LoadJSON2.class, true);
             CommandModule promiseContent = promise.get();
             Map<String, Map<String, Integer>> map = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
@@ -83,12 +91,28 @@ public class test implements Command {
                 }
                 System.out.println("");
             }
+            */
+            
+            
+            Future<CommandModule> promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
+            CommandModule promiseContent = promise.get();
+            Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
+            
+                      
+            promise = cmdService.run(Get4ImgStack.class, true,
+                    "imageMap", imageMap);
+            promiseContent = promise.get();
+            Dataset dataset = (Dataset) promiseContent.getOutput("outStack");
+            uiService.show(dataset);
+            
+            
             
         } catch (InterruptedException ex) {
             Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
             Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
 }

@@ -8,6 +8,7 @@ package zmbh.commands;
 import io.scif.services.DatasetIOService;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +28,8 @@ import zmbh.commands.correction.GetFFImg;
 import zmbh.commands.measure.GetRatioImage;
 import zmbh.commands.measure.RunMeasurementsV4_allDir;
 import zmbh.commands.util.AddSliceToStack;
+import zmbh.config.Get4ImgStack;
+import zmbh.config.LoadJSON2;
 
 /**
  *
@@ -72,6 +75,9 @@ public class Process implements Command {
     @Parameter(type = ItemIO.INPUT)
     String rLibPath;
     
+    @Parameter(type = ItemIO.INPUT)
+    File jsonFile;
+    
     @Override
     public void run() {
         long t0 = System.nanoTime();
@@ -89,12 +95,32 @@ public class Process implements Command {
                 File resultDir_STACKS = new File(resultDir.getPath() + "/0_STACKS");
                 resultDir_STACKS.mkdir();
                 
+                File resultDir_STACKS_rawStacks = new File(resultDir_STACKS.getPath() + "/raw stacks");
+                resultDir_STACKS_rawStacks.mkdir();
+                
+                promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
+                promiseContent = promise.get();
+                Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
+            
+                
+                // Get 4 image stacks
+                File[] fileStackList = rawStackDir.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
+                for(File stack : fileStackList){
+                    Dataset inStack = ioService.open(stack.getPath());
+                    promise = cmdService.run(Get4ImgStack.class, true,
+                        "inStack", inStack,
+                        "imageMap", imageMap);
+                    promiseContent = promise.get();
+                    Dataset dataset = (Dataset) promiseContent.getOutput("outStack");
+                    ioService.save(dataset, resultDir_STACKS_rawStacks + "/" + dataset.getName());
+                }
+                
                 File resultDir_STACKS_correctedStacks = new File(resultDir_STACKS.getPath() + "/corrected stacks");
                 resultDir_STACKS_correctedStacks.mkdir();
                 
                 // FlatField & DarkField corrections
                 promise = cmdService.run(GetFFImg.class, true,
-                        "inputStackDir", rawStackDir,
+                        "inputStackDir", resultDir_STACKS_rawStacks,
                         "saveDir", resultDir_STACKS_correctedStacks,
                         "targetType", "32-bit signed float",
                         "darkfieldValue", 100,
@@ -114,8 +140,9 @@ public class Process implements Command {
                             "sourceSlice", 2,
                             "targetSlice", 0,
                             "landMarkFilePath", landMarkFilePath);
-                    promiseContent = promise.get();
+                    promiseContent = promise.get();                    
                     Dataset tmpStack = (Dataset) promiseContent.getOutput("outStack");
+                    /*
                     promise = cmdService.run(ChromaCorrect.class, true,
                             "stack", tmpStack,
                             "sourceSlice", 3,
@@ -123,6 +150,7 @@ public class Process implements Command {
                             "landMarkFilePath", landMarkFilePath);
                     promiseContent = promise.get();
                     tmpStack = (Dataset) promiseContent.getOutput("outStack");
+                    */
                     ioService.save(tmpStack, resultDir_STACKS_correctedStacks + "/" + tmpStack.getName());
                 }
                 
@@ -145,7 +173,8 @@ public class Process implements Command {
                             "slice", ratioDataset);
                     promiseContent = promise.get();
                     Dataset extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
-
+                    
+                    /*
                     promise = cmdService.run(GetRatioImage.class, true,
                             "stack", inDataset,
                             "sliceNum1", 1,
@@ -158,6 +187,7 @@ public class Process implements Command {
                             "slice", ratioDataset);
                     promiseContent = promise.get();
                     extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
+                    */
                     
                     ioService.save(extentedStack, resultDir_STACKS_extendedStacks + "/" + extentedStack.getName());
                 }
