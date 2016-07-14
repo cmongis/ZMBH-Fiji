@@ -47,12 +47,12 @@ public class Get4ImgStack implements Command {
         long heigth = inStack.dimension(inStack.dimensionIndex(Axes.Y));
         long[] dims = new long[]{width, heigth, 4};
         String name = inStack.getName();
-        AxisType[] axes = new AxisType[]{Axes.X, Axes.Y, Axes.CHANNEL};
+        AxisType[] axes = new AxisType[]{Axes.X, Axes.Y, Axes.Z};
         int bitsPerPixels = inStack.getType().getBitsPerPixel();
         boolean signed = inStack.isSigned();
         boolean floating = !inStack.isInteger();
         
-        outStack = datasetService.create(dims, name, axes, bitsPerPixels, signed, floating);
+        outStack = datasetService.create(dims, name, axes, bitsPerPixels, signed, floating, false);
         
         RandomAccess<RealType<?>> inRa = inStack.randomAccess();
         RandomAccess<RealType<?>> outRa = outStack.randomAccess();

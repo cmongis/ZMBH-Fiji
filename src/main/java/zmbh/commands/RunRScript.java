@@ -22,19 +22,19 @@ public class RunRScript implements Command {
     @Override
     public void run() {
         
-        /*
+        
         ProcessBuilder builder = new ProcessBuilder(
                 "Rscript",
                 "--default-packages=stats,graphics,grDevices,utils,datasets,base,methods,base,ggplot2,ggrepel,coin,plotly",
-                "C:\\Users\\User\\Desktop\\R scripts\\myLib.R",
-                "C:\\Users\\User\\Documents\\testProcess\\Out\\1_MEASURE\\raw measurements");                
+                "C:\\Users\\User\\Desktop\\R scripts\\myLib2.R",
+                "C:\\Users\\User\\Documents\\testProcess\\Out\\1_MEASURE");                
         builder.inheritIO();
         try {
             builder.start();
         } catch (IOException ex) {
             Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
+        
         
         
         

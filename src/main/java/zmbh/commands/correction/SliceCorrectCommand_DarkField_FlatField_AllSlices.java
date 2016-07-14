@@ -76,6 +76,7 @@ public class SliceCorrectCommand_DarkField_FlatField_AllSlices implements Comman
             promiseContent = promise.get();
             inputDataset = (Dataset) promiseContent.getOutput("inputDataset");
             
+            /*
             promise = cmdService.run(SliceCorrectCommand_DarkField_FlatField.class, true,
                     "inputDataset", inputDataset,
                     "darkfieldValue", darkfieldValue,
@@ -91,6 +92,7 @@ public class SliceCorrectCommand_DarkField_FlatField_AllSlices implements Comman
                     "flatFieldDataset", bfpFlatFieldDataset);
             promiseContent = promise.get();
             inputDataset = (Dataset) promiseContent.getOutput("inputDataset");
+            */
         } catch (IOException ex) {
             Logger.getLogger(SliceCorrectCommand_DarkField_FlatField_AllSlices.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {

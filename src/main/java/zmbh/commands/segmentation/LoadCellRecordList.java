@@ -57,7 +57,8 @@ public class LoadCellRecordList implements Command {
                 float boundingSquareHeight = Float.parseFloat(record.get("Height"));
                 String label = record.get("Label");
                 boolean isBlue = false;
-                String blueLabel = record.get("bfp300_class");
+                //String blueLabel = record.get("bfp300_class");
+                String blueLabel = record.get("discrim_class");
                 if(blueLabel.equals("Blue")){
                     isBlue = true;
                 }

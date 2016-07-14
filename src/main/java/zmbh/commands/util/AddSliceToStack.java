@@ -46,7 +46,8 @@ public class AddSliceToStack implements Command {
 
         long[] dimensions = new long[stack.numDimensions()];
         stack.dimensions(dimensions);
-        dimensions[stack.dimensionIndex(Axes.TIME)] += 1;
+        //dimensions[stack.dimensionIndex(Axes.Z)] += 1;
+        dimensions[2] += 1;
         
         String inputDatasetName = stack.getName();
         String[] split = inputDatasetName.split("\\.");
@@ -63,7 +64,7 @@ public class AddSliceToStack implements Command {
         RandomAccess<RealType<?>> extstackRandomAccess = extendedStack.randomAccess();
         RandomAccess<RealType<?>> sliceRandomAccess = slice.randomAccess();
         
-        for(int i = 0; i < stack.dimension(stack.dimensionIndex(Axes.TIME)); i++){
+        for(int i = 0; i < stack.dimension(2); i++){
             stackRandomAccess.setPosition(new long[]{0, 0, i});
             extstackRandomAccess.setPosition(new long[]{0, 0, i});
             for(int x = 0; x < stack.dimension(stack.dimensionIndex(Axes.X)); x++){
@@ -80,7 +81,7 @@ public class AddSliceToStack implements Command {
         }
         
         
-        extstackRandomAccess.setPosition(new long[]{0, 0, extendedStack.dimension(extendedStack.dimensionIndex(Axes.TIME))});
+        extstackRandomAccess.setPosition(new long[]{0, 0, extendedStack.dimension(2)-1});
         sliceRandomAccess.setPosition(new long[]{0, 0});
 
         for(int x = 0; x < dimensions[0]; x++){

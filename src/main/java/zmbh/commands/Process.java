@@ -5,6 +5,8 @@
  */
 package zmbh.commands;
 
+import io.scif.SCIFIO;
+import io.scif.config.SCIFIOConfig;
 import io.scif.services.DatasetIOService;
 import java.io.File;
 import java.io.IOException;
@@ -137,7 +139,7 @@ public class Process implements Command {
                     Dataset inStack = ioService.open(stack.getPath());
                     promise = cmdService.run(ChromaCorrect.class, true,
                             "stack", inStack,
-                            "sourceSlice", 2,
+                            "sourceSlice", 1,
                             "targetSlice", 0,
                             "landMarkFilePath", landMarkFilePath);
                     promiseContent = promise.get();                    
@@ -164,7 +166,7 @@ public class Process implements Command {
                     promise = cmdService.run(GetRatioImage.class, true,
                             "stack", inDataset,
                             "sliceNum1", 0,
-                            "sliceNum2", 2);
+                            "sliceNum2", 1);
                     promiseContent = promise.get();
                     Dataset ratioDataset  = (Dataset) promiseContent.getOutput("ratioDataset");
 

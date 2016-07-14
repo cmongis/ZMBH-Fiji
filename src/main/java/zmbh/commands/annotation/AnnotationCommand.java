@@ -74,8 +74,9 @@ public class AnnotationCommand implements Command {
         ArrayList<ImageProcessor> impList = new ArrayList<>();
         for(int i = 0; i < inDataset.dimension(2); i++){
             imagePlus.setPosition(i+1, 1, 1);
-            imagePlus.show();
-
+            imagePlus.resetDisplayRange();
+            //imagePlus.show();
+            /*
             MyContrastAjuster ca = new MyContrastAjuster();
             ca.run("");
             for(ActionListener a: ca.resetB.getActionListeners()) {
@@ -83,7 +84,7 @@ public class AnnotationCommand implements Command {
             }
             ca.done = true;
             ca.close();
-            
+            */
             ImageProcessor imp = imagePlus.getProcessor().convertToRGB();
             imp.setColor(Color.BLACK);
             imp.setLineWidth(1);
