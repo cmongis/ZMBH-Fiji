@@ -15,6 +15,11 @@ import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
+/**
+ *
+ * @author Potier Guillaume, 2016
+ */
+
 @Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD DarkField & Flatfield correct slice (all slices)", label="")
 public class SliceCorrectCommand_DarkField_FlatField_AllSlices implements Command {
     

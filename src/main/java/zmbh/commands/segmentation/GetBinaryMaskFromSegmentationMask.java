@@ -22,7 +22,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Segmentation>CMD Get binary mask from segmentation mask", label="")

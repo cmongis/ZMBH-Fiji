@@ -29,7 +29,7 @@ import zmbh.commands.ImageJ1PluginAdapter;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Measure>CMD Make Measurements V4", label="")

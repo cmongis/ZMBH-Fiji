@@ -7,8 +7,9 @@ package zmbh.commands.segmentation;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
+
 public class CellXseed {
     private int id;
     

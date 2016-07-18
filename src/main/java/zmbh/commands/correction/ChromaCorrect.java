@@ -27,7 +27,7 @@ import zmbh.commands.util.ReplaceSlice;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD ChromaCorrect", label="")

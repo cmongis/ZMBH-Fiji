@@ -46,7 +46,7 @@ import zmbh.commands.roi.RoiDataset;
 
 /**
  *
- * @author Guillaume
+ * @author Potier Guillaume, 2016
  */
 
 

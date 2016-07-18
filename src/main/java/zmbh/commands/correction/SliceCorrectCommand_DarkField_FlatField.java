@@ -21,7 +21,8 @@ import org.scijava.plugin.Plugin;
 import zmbh.commands.util.ConvertDatasetEncodingCommand;
 
 /**
- * @author Guillaume
+ *
+ * @author Potier Guillaume, 2016
  */
 
 

@@ -17,7 +17,7 @@ import org.scijava.plugin.Plugin;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class)

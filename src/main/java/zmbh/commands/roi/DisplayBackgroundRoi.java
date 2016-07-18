@@ -37,7 +37,7 @@ import zmbh.commands.MyContrastAjuster;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Roi>CMD Display background roi", label="")

@@ -35,7 +35,7 @@ import zmbh.commands.segmentation.LoadCellRecordList;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>RUN Annotation", label="")

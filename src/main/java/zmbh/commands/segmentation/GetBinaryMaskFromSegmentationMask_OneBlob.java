@@ -22,7 +22,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 

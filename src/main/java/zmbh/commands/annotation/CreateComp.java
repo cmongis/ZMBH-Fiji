@@ -26,7 +26,7 @@ import zmbh.commands.segmentation.CellRecord;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class)

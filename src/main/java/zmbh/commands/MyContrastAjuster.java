@@ -61,7 +61,7 @@ import java.awt.event.WindowEvent;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 

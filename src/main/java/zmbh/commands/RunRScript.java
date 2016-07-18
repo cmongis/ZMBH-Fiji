@@ -10,10 +10,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.scijava.command.Command;
 import org.scijava.plugin.Plugin;
-
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>RUN Rscript", label="")

@@ -19,7 +19,7 @@ import org.scijava.ui.UIService;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Measure>CMD getRatioImage", label="")

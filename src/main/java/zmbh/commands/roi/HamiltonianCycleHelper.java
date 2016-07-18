@@ -18,7 +18,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 
 /**
  *
- * @author Guillaume
+ * @author Potier Guillaume, 2016
  */
 
 public class HamiltonianCycleHelper {

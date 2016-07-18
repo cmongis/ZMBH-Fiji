@@ -34,7 +34,10 @@ import org.scijava.plugin.Plugin;
 import zmbh.commands.segmentation.CellXseed;
 import zmbh.commands.segmentation.LoadCellXseedList;
 
-
+/**
+ *
+ * @author Potier Guillaume, 2016
+ */
 
 @Plugin(type = Command.class)
 public class RunMeasurementsV3 implements Command {

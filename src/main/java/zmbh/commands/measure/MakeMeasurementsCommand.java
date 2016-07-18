@@ -38,7 +38,8 @@ import zmbh.commands.GetMaxValueCommand;
 import zmbh.commands.ImageJ1PluginAdapter;
 
 /**
- * * @author User
+ *
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class)

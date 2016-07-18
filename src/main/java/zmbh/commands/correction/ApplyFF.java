@@ -23,7 +23,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
 
 /**
  *
- * @author User
+ * @author Potier Guillaume, 2016
  */
 
 @Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD Get FF Stacks", label="")
