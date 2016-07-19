@@ -328,15 +328,11 @@ public class MainAppFrame extends JFrame {
                         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 
                             int newV = Math.round(newValue.floatValue());
-                            int oldV = Math.round(oldValue.floatValue());
-                            
+                            int oldV = Math.round(oldValue.floatValue());                        
                             slider.adjustValue(newV);
                             
                             if(newV != oldV){
-                                
-                                //System.out.println(Math.round(newValue.floatValue()));
-                                //System.out.println(Math.round(oldValue.floatValue()));
-                                //System.out.println("");
+                                /*
                                 long nbChan = -1;
                                 long chanDimIndex = -1;
 
@@ -352,12 +348,6 @@ public class MainAppFrame extends JFrame {
 
                                 int[] pos = new int[(int)((DatasetView) imageDisplay.getActiveView()).numDimensions()];
                                 ((DatasetView) imageDisplay.getActiveView()).localize(pos);
-                                /*
-                                for(int k = 0; k < pos.length; k++){
-                                    System.out.print(pos[k] + " ");  
-                                    System.out.println("");
-                                }
-                                */
 
                                 RandomAccess<RealType<?>> ra = ((Dataset) imageDisplay.getActiveView().getData()).randomAccess();
                                 ra.setPosition(pos);
@@ -384,8 +374,8 @@ public class MainAppFrame extends JFrame {
                                         }
                                     }
                                 }
-                                //System.out.println(min);
-                                //System.out.println(max);
+
+                                
                                 if(nbChan > -1){
                                     ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum((int) pos[(int)chanDimIndex], max);
                                     ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum((int) pos[(int)chanDimIndex], min);                                
@@ -397,11 +387,13 @@ public class MainAppFrame extends JFrame {
                                 ((DatasetView) imageDisplay.getActiveView()).rebuild();
                                 imageDisplay.update();
 
-
                                 BufferedImage image = ((DatasetView) imageDisplay.getActiveView()).getScreenImage().image();             
                                 WritableImage writableImage = new WritableImage(image.getWidth(), image.getHeight());
                                 SwingFXUtils.toFXImage(image, writableImage);
                                 controller.getImageView().setImage(writableImage);
+                                */
+                                Thread thread = new Thread(new MyThread(structureInfo, imageDisplay, newValue, oldValue, entry, controller));
+                                thread.start();
                             }
                             
                             

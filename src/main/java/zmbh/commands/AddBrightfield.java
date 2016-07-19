@@ -55,6 +55,7 @@ public class AddBrightfield implements Command {
             for(int i = 0; i < stackFileList.length; i++){
                 try {
                     File stackFile = stackFileList[i];
+                    
                     File bfStackFile = bfStackFileList[i];
                     
                     Dataset stack = ioService.open(stackFile.getPath());
