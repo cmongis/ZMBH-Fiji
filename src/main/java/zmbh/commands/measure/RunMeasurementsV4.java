@@ -83,8 +83,7 @@ public class RunMeasurementsV4 implements Command {
     
     @Override
     public void run() {
-        Date start = new Date();
-
+        Date startRun = new Date();
         Future<CommandModule> promise;
         CommandModule promiseContent;
         try {
@@ -94,6 +93,7 @@ public class RunMeasurementsV4 implements Command {
             promise = cmdService.run(LoadCellXseedList.class, false, "cellFile", cellFile);
             promiseContent = promise.get();
             ArrayList<CellXseed> cellxSeedList = (ArrayList<CellXseed>) promiseContent.getOutput("cellxSeedList");
+            
             
             ArrayList<Roi> roiList = new ArrayList<>();       
             for(CellXseed cellxSeed : cellxSeedList){
@@ -114,6 +114,7 @@ public class RunMeasurementsV4 implements Command {
                     Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+
             
             // Set measurements parameters
             Analyzer analyzer = new Analyzer();
@@ -148,13 +149,21 @@ public class RunMeasurementsV4 implements Command {
             
             ImagePlus inDatasetImp = ImageJ1PluginAdapter.unwrapDataset(extentedStack);
             
+            ArrayList<Long> arrayTime = new ArrayList<>();
+            ArrayList<Long> arrayTime1 = new ArrayList<>();
+            
             for(Roi roi : roiList){
+                long startRoiDataset = System.nanoTime();
                 // Get the square bounding dataset of 1 roi
                 // Used to compute Haralick features
                 promise = cmdService.run(RoiDataset.class, true, "inDataset", extentedStack, "roi", roi);
                 promiseContent = promise.get();
                 Dataset outDataset = (Dataset) promiseContent.getOutput("outDataset");
-                ImagePlus outDatasetImp = ImageJ1PluginAdapter.unwrapDataset(outDataset);
+                //ImagePlus outDatasetImp = ImageJ1PluginAdapter.unwrapDataset(outDataset);
+                
+                arrayTime1.add((long) promiseContent.getOutput("time1"));
+                long stopRoiDatset = System.nanoTime();
+                arrayTime.add(stopRoiDatset - startRoiDataset);
                 
                 // Run measures
                 promise = cmdService.run(MakeMeasurementsV4.class, true, "inDatasetImp", inDatasetImp, "nbSlice", extentedStack.dimension(2), "roi", roi, "analyzer", analyzer, "roiDataset", outDataset);
@@ -162,24 +171,37 @@ public class RunMeasurementsV4 implements Command {
                 ResultsTable resultsTable = (ResultsTable) promiseContent.getOutput("res");
                 for(int i = 0; i < resultsTable.size(); i++){
                     results.get(i).add(resultsTable.getRowAsString(i));
-                }                
+                }     
+                //System.gc();
             }
             
+            double t1 = arrayTime1.stream().mapToLong(L -> L.longValue()).average().getAsDouble();
+            System.out.println("Time1 = " + t1);
+            System.out.println("Total = " + arrayTime.stream().mapToLong(L -> L.longValue()).average().getAsDouble());
+            System.out.println("");
+            
+            cmdService.dispose();
+            
+            
             // save in a file
+            Writer writer;
+            CSVFormat format;
+            CSVPrinter csvFilePrinter;
             for(int i = 0; i < results.size(); i++){               
-                Writer writer = new FileWriter(saveDir.getPath() + "/" + extentedStack.getName() + "_slice" + i + ".csv");
-                CSVFormat format = CSVFormat.DEFAULT.withHeader(Analyzer.getResultsTable().getHeadings());
-                CSVPrinter csvFilePrinter = new CSVPrinter(writer, format);
+                writer = new FileWriter(saveDir.getPath() + "/" + extentedStack.getName() + "_slice" + i + ".csv");
+                format = CSVFormat.DEFAULT.withHeader(Analyzer.getResultsTable().getHeadings());
+                csvFilePrinter = new CSVPrinter(writer, format);
                 for(String records : results.get(i)){
                     String[] split = records.split("\\t");
                     csvFilePrinter.printRecord(split);
                 }
-                writer.flush();
-                writer.close();
+                //writer.flush();
+                //writer.close();
+                csvFilePrinter.flush();
                 csvFilePrinter.close();
             }
             
-            
+            /*
             // Same measurement procedure for the background of the image
             // The background roi is the inverse of the union of all rois in the image
             ArrayList<ArrayList<String>> backgroundResults = new ArrayList<>();
@@ -201,9 +223,9 @@ public class RunMeasurementsV4 implements Command {
             }
              // save in a file
             for(int i = 0; i < backgroundResults.size(); i++){               
-                Writer writer = new FileWriter(saveDir.getPath() + "/" + extentedStack.getName() + "_slice" + i + "_background.csv");
-                CSVFormat format = CSVFormat.DEFAULT.withHeader(Analyzer.getResultsTable().getHeadings());
-                CSVPrinter csvFilePrinter = new CSVPrinter(writer, format);
+                writer = new FileWriter(saveDir.getPath() + "/" + extentedStack.getName() + "_slice" + i + "_background.csv");
+                format = CSVFormat.DEFAULT.withHeader(Analyzer.getResultsTable().getHeadings());
+                csvFilePrinter = new CSVPrinter(writer, format);
                 for(String records : backgroundResults.get(i)){
                     String[] split = records.split("\\t");
                     csvFilePrinter.printRecord(split);
@@ -212,14 +234,16 @@ public class RunMeasurementsV4 implements Command {
                 writer.close();
                 csvFilePrinter.close();
             }
-            
-            Date stop = new Date();           
-            System.out.println("RunMeasurementsV4 exec time : " + (stop.getTime() - start.getTime())/1000 + "s");
+            */
+            Date stopRun = new Date();
+            System.out.println("RunMeasurementsV4 exec time : " + (stopRun.getTime() - startRun.getTime())/1000 + "s");
             System.out.println("RunMeasurementsV4 blobs processed : " + roiList.size());            
-            datasetService.getDatasets().remove(extentedStack);
+            //datasetService.getDatasets().remove(extentedStack);
+            
+            
 
         } catch (IOException | InterruptedException | ExecutionException ex) {
-            Logger.getLogger(RunMeasurementsV3.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RunMeasurementsV4.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

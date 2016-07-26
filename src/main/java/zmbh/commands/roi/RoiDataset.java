@@ -7,6 +7,7 @@ package zmbh.commands.roi;
 
 import ij.gui.Roi;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import net.imagej.axis.Axes;
@@ -38,8 +39,13 @@ public class RoiDataset implements Command {
     @Parameter(type = ItemIO.OUTPUT)
     Dataset outDataset;
     
+    @Parameter(type = ItemIO.OUTPUT)
+    long time1;
+    
+    
     @Override
     public void run() {
+        long startRoiDataset = System.nanoTime();
         
         Rectangle bounds = roi.getBounds();
         
@@ -59,6 +65,10 @@ public class RoiDataset implements Command {
         outputRandomAccess.setPosition(new long[]{0, 0, 0});
         
         
+        
+        
+        startRoiDataset = System.nanoTime();
+        
         for(int x = bounds.x; x < (bounds.x + dimensions[0]); x++){
             for(int y = bounds.y; y < (bounds.y + dimensions[1]); y++){
                 for(int slice = 0; slice < dimensions[2]; slice++){
@@ -74,6 +84,8 @@ public class RoiDataset implements Command {
                     outputRandomAccess.get().setReal(inputRandomAccess.get().getRealFloat());                                      
                 }                
             }
-        }         
+        } 
+        long stopRoiDatset = System.nanoTime();
+        time1 = stopRoiDatset - startRoiDataset;
     }    
 }

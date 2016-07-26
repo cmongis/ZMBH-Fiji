@@ -66,7 +66,7 @@ public class MakeMeasurementsV4 implements Command {
     Analyzer analyzer;
     
     
-    @Parameter(type = ItemIO.OUTPUT)
+    @Parameter(type = ItemIO.OUTPUT, persist = false)
     ResultsTable res;
     
     

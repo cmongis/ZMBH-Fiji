@@ -59,7 +59,7 @@ public class RunMeasurementsV4_allDir implements Command {
                                 "saveDir",saveDir);
                         promise.get();
                         promise = null;
-                        //System.gc();
+                        System.gc();
 
                     } catch (InterruptedException | ExecutionException ex) {
                         Logger.getLogger(MakeMeasurementsCommand_AllSlices_AllDir.class.getName()).log(Level.SEVERE, null, ex);

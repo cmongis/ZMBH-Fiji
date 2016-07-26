@@ -5,6 +5,7 @@
  */
 package zmbh.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,14 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import net.imagej.display.process.ActiveChannelCollectionPreprocessor;
+import net.imagej.display.process.ActiveDataViewPreprocessor;
+import net.imagej.display.process.ActiveDatasetPreprocessor;
+import net.imagej.display.process.ActiveDatasetViewPreprocessor;
+import net.imagej.display.process.ActiveImageDisplayPreprocessor;
+import net.imagej.legacy.plugin.MacroPreprocessor;
+import net.imagej.legacy.ui.LegacyInputHarvester;
+import net.imagej.ops.NamespacePreprocessor;
 import org.scijava.MenuPath;
 import org.scijava.Priority;
 import org.scijava.convert.ConvertService;
@@ -31,10 +40,19 @@ import org.scijava.module.ModuleRunner;
 import org.scijava.module.ModuleService;
 import org.scijava.module.event.ModulesAddedEvent;
 import org.scijava.module.event.ModulesRemovedEvent;
+import org.scijava.module.process.CheckInputsPreprocessor;
+import org.scijava.module.process.DebugPreprocessor;
+import org.scijava.module.process.DefaultValuePreprocessor;
+import org.scijava.module.process.GatewayPreprocessor;
+import org.scijava.module.process.InitPreprocessor;
+import org.scijava.module.process.LoadInputsPreprocessor;
 import org.scijava.module.process.ModulePostprocessor;
 import org.scijava.module.process.ModulePreprocessor;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
+import org.scijava.module.process.SaveInputsPreprocessor;
+import org.scijava.module.process.ServicePreprocessor;
+import org.scijava.module.process.ValidityPreprocessor;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -44,6 +62,10 @@ import org.scijava.service.AbstractService;
 import org.scijava.service.SciJavaService;
 import org.scijava.service.Service;
 import org.scijava.thread.ThreadService;
+import org.scijava.ui.FilePreprocessor;
+import org.scijava.ui.UIPreprocessor;
+import org.scijava.ui.awt.widget.AWTInputHarvester;
+import org.scijava.ui.swing.widget.SwingInputHarvester;
 import org.scijava.util.ClassUtils;
 import org.scijava.util.MiscUtils;
 
@@ -333,11 +355,64 @@ public class DefaultSilentModuleService extends AbstractService implements
 	/** Creates the preprocessor chain. */
 	private List<? extends PreprocessorPlugin> pre(final boolean process) {
 		if (!process) return null;
-		return pluginService.createInstancesOfType(PreprocessorPlugin.class);
+                
+                
+                List<PreprocessorPlugin> createInstancesOfType = pluginService.createInstancesOfType(PreprocessorPlugin.class);
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(SaveInputsPreprocessor.class.getName())){
+                        createInstancesOfType.remove(ppp);
+                        break;
+                    }
+                }
+                
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(CheckInputsPreprocessor.class.getName())){
+                        createInstancesOfType.remove(ppp);
+                        break;
+                    }
+                }
+                
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(LoadInputsPreprocessor.class.getName())){
+                        createInstancesOfType.remove(ppp);
+                        break;
+                    }
+                }
+                /*
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(DebugPreprocessor.class.getName())){
+                        createInstancesOfType.remove(ppp);
+                        break;
+                    }
+                }
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(MacroPreprocessor.class.getName())){
+                        createInstancesOfType.remove(ppp);
+                        break;
+                    }
+                }
+                */
+                
+                return createInstancesOfType;
+                
+                /*
+                List<PreprocessorPlugin> createInstancesOfType = pluginService.createInstancesOfType(PreprocessorPlugin.class);
+                List<PreprocessorPlugin> myList = new ArrayList<>();
+                for(PreprocessorPlugin ppp : createInstancesOfType){
+                    if(ppp.getClass().getName().equals(InitPreprocessor.class.getName())){
+                        myList.add(ppp);                    
+                    }
+                }
+                
+                return myList;
+                */
+                
+		//return pluginService.createInstancesOfType(PreprocessorPlugin.class);
 	}
 
 	/** Creates the postprocessor chain. */
 	private List<? extends PostprocessorPlugin> post(final boolean process) {
+            /*
             if (!process) return null;
             List<PostprocessorPlugin> createInstancesOfType = pluginService.createInstancesOfType(PostprocessorPlugin.class);
             for(PostprocessorPlugin ppp : createInstancesOfType){
@@ -347,6 +422,8 @@ public class DefaultSilentModuleService extends AbstractService implements
                 }
             }
             return createInstancesOfType;
+            */
+            return null;
 	}
 
 	/**

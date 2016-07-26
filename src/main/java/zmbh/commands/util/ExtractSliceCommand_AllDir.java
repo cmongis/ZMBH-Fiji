@@ -5,6 +5,7 @@
  */
 package zmbh.commands.util;
 
+import ij.ImagePlus;
 import ij.io.FileSaver;
 import io.scif.services.DatasetIOService;
 import java.io.File;
@@ -27,7 +28,7 @@ import zmbh.commands.ImageJ1PluginAdapter;
  * @author User
  */
 
-@Plugin(type = Command.class)
+@Plugin(type = Command.class, menuPath = "Dev-commands>Util>extract slice alldir")
 public class ExtractSliceCommand_AllDir implements Command {
     
     @Parameter
@@ -60,8 +61,13 @@ public class ExtractSliceCommand_AllDir implements Command {
                     promiseContent = promise.get();
                     Dataset outputDataset = (Dataset) promiseContent.getOutput("outputDataset");
                     if(saveDir.isDirectory()){
-                        FileSaver fileSaver = new FileSaver(ImageJ1PluginAdapter.unwrapDataset(outputDataset));
+                        /*
+                        ImagePlus unwrapDataset = ImageJ1PluginAdapter.unwrapDataset(outputDataset);
+                        unwrapDataset.resetDisplayRange();
+                        FileSaver fileSaver = new FileSaver(unwrapDataset);
                         fileSaver.saveAsTiff(saveDir.getPath()+ "/" + outputDataset.getName());
+                        */
+                        datasetioService.save(outputDataset, saveDir.getPath()+ "/" + outputDataset.getName());
                     }
                     else{
                         System.err.println(saveDir.getPath() + " is not a directory");

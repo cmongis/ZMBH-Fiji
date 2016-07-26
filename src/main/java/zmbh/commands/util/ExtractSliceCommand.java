@@ -9,10 +9,13 @@ import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
+import net.imagej.display.DatasetView;
+import net.imagej.display.ImageDisplay;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.numeric.RealType;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
+import org.scijava.display.DisplayService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
@@ -24,13 +27,16 @@ public class ExtractSliceCommand implements Command {
     @Parameter
     DatasetService datasetService;   
     
-    @Parameter(type = ItemIO.INPUT)
+    @Parameter
+    DisplayService displayService;
+    
+    @Parameter(type = ItemIO.INPUT, persist = false)
     Dataset inputDataset;
     
     @Parameter
     int sliceNumber;
     
-    @Parameter(type = ItemIO.OUTPUT)
+    @Parameter(type = ItemIO.OUTPUT, persist = false)
     Dataset outputDataset;
     
     
@@ -61,6 +67,7 @@ public class ExtractSliceCommand implements Command {
 
                 outputRandomAccess.get().setReal(inputRandomAccess.get().getRealDouble());
             }
-        }       
+        }
+       
     }
 }

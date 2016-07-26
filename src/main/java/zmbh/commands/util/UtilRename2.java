@@ -19,7 +19,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class)
+@Plugin(type = Command.class, menuPath = "Dev-commands>Util>Rename2")
 public class UtilRename2 implements Command {
 
     @Parameter

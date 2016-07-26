@@ -5,8 +5,6 @@
  */
 package zmbh.commands;
 
-import io.scif.SCIFIO;
-import io.scif.config.SCIFIOConfig;
 import io.scif.services.DatasetIOService;
 import java.io.File;
 import java.io.IOException;
