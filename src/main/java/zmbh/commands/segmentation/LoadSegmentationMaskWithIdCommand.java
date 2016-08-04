@@ -31,7 +31,7 @@ import org.scijava.plugin.Plugin;
  */
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Segmentation>CMD Load segmentation mask with IDs(CellX)", label="")
+@Plugin(type = Command.class)
 public class LoadSegmentationMaskWithIdCommand implements Command {
     
     @Parameter

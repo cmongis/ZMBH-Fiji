@@ -6,25 +6,17 @@
 package zmbh.commands;
 
 import io.scif.services.DatasetIOService;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.imagej.DatasetService;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
-import org.scijava.module.ModuleInfo;
 import org.scijava.module.ModuleService;
-import org.scijava.module.process.ModulePreprocessor;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.object.DefaultObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import org.scijava.plugin.PluginInfo;
 import org.scijava.plugin.PluginService;
-import org.scijava.plugin.SciJavaPlugin;
 import org.scijava.ui.UIService;
 
 /**

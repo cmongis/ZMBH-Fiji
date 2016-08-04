@@ -20,7 +20,7 @@ import org.scijava.plugin.Plugin;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD DarkField & Flatfield correct slice (all slices)", label="")
+@Plugin(type = Command.class)
 public class SliceCorrectCommand_DarkField_FlatField_AllSlices implements Command {
     
     @Parameter

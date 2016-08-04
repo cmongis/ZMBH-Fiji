@@ -43,7 +43,7 @@ import zmbh.commands.MyContrastAjuster;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>Annotate Image", label="")
+@Plugin(type = Command.class)
 public class AnnotationCommand implements Command {
 
     @Parameter

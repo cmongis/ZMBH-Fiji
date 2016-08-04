@@ -20,7 +20,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Util>CMD replace slice", label="")
+@Plugin(type = Command.class)
 public class ReplaceSlice implements Command {
     
     @Parameter(type = ItemIO.INPUT)

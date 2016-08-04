@@ -26,7 +26,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
  */
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Segmentation>CMD Get binary mask from segmentation mask (one blob)", label="")
+@Plugin(type = Command.class)
 public class GetBinaryMaskFromSegmentationMask_OneBlob implements Command {
     
     @Parameter

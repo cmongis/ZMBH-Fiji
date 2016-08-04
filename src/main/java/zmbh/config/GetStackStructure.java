@@ -27,7 +27,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Config>CMD get stack struct", label="")
+@Plugin(type = Command.class)
 public class GetStackStructure implements Command {
     
     @Parameter

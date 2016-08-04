@@ -99,11 +99,25 @@ public class RunComposeImg implements Command {
                 }
                 promise = cmdService.run(ComposeImg.class, true, "mapFileList", list, "title", label, "sliceNumber", sliceNumber);
                 promiseContent = promise.get();
+                
+                String sliceName = "default";
+                switch(sliceNumber){
+                    case 0: sliceName = "quantif1";
+                            break;
+                    case 1: sliceName = "quantif2";
+                            break;
+                    case 2: sliceName = "discrim";
+                            break;
+                    case 3: sliceName = "brightfield";
+                            break;
+                    case 4: sliceName = "ratio";
+                            break;
+                }
                 if(saveDir != null){
                     Dataset blue = (Dataset) promiseContent.getOutput("blueCompDataset");
                     Dataset noblue = (Dataset) promiseContent.getOutput("noblueCompDataset");
-                    ioService.save(blue, saveDir + "/" + blue.getName() + ".tif");
-                    ioService.save(noblue, saveDir + "/" + noblue.getName() + ".tif");
+                    ioService.save(blue, saveDir + "/" + blue.getName() + sliceName + ".tif");
+                    ioService.save(noblue, saveDir + "/" + noblue.getName() + sliceName + ".tif");
                 }
             }
             

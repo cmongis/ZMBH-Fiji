@@ -30,7 +30,7 @@ import zmbh.commands.util.ReplaceSlice;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD ChromaCorrect", label="")
+@Plugin(type = Command.class)
 public class ChromaCorrect implements Command {
     
     @Parameter

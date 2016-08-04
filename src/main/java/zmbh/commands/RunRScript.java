@@ -5,32 +5,60 @@
  */
 package zmbh.commands;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.scijava.ItemIO;
 import org.scijava.command.Command;
+import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 /**
  *
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>RUN Rscript", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Run Rscript", label="")
 public class RunRScript implements Command {
-
+    
+    @Parameter(type = ItemIO.INPUT)
+    File rScript;
+    
+    @Parameter(type = ItemIO.INPUT)
+    String rLibPath;
+    
+    @Parameter(type = ItemIO.INPUT)
+    File resultDir_MEASURE;
+    
+    @Parameter(type = ItemIO.INPUT)
+    File resultDir_MEASURE_blueControl;
+    
+    @Parameter(type = ItemIO.INPUT)
+    File resultDir_MEASURE_wtControl;
+    
+    @Parameter(type = ItemIO.INPUT)
+    File phantomJS_dir;
+    
     @Override
     public void run() {
         
         
+        // Run R processing script               
         ProcessBuilder builder = new ProcessBuilder(
                 "Rscript",
-                "--default-packages=stats,graphics,grDevices,utils,datasets,base,methods,base,ggplot2,ggrepel,coin,plotly",
-                "C:\\Users\\User\\Desktop\\R scripts\\myLib2.R",
-                "C:\\Users\\User\\Documents\\testProcess\\Out\\1_MEASURE");                
+                rScript.getAbsolutePath(),
+                resultDir_MEASURE.getAbsolutePath(),
+                rLibPath,
+                resultDir_MEASURE_blueControl.getAbsolutePath(),
+                resultDir_MEASURE_wtControl.getAbsolutePath(),
+                phantomJS_dir.getAbsolutePath());                
         builder.inheritIO();
         try {
-            builder.start();
+            java.lang.Process process = builder.start();
+            process.waitFor();
         } catch (IOException ex) {
+            Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
             Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
         }
         

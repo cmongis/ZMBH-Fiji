@@ -26,7 +26,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD Get FF Stacks", label="")
+@Plugin(type = Command.class)
 public class ApplyFF implements Command {
     
     @Parameter

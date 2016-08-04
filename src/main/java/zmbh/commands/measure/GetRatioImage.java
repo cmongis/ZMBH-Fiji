@@ -22,7 +22,7 @@ import org.scijava.ui.UIService;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Measure>CMD getRatioImage", label="")
+@Plugin(type = Command.class)
 public class GetRatioImage implements Command {
     
     @Parameter

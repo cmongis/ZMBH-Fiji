@@ -89,6 +89,7 @@ public class RunMeasurementsV4 implements Command {
         try {
             Dataset extentedStack = ioService.open(inDatasetFile.getPath());
             
+            
             // Load roi list
             promise = cmdService.run(LoadCellXseedList.class, false, "cellFile", cellFile);
             promiseContent = promise.get();

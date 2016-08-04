@@ -21,7 +21,7 @@ import org.scijava.plugin.Plugin;
  * @author Guillaume
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>deprecated CMD flat field correction", label="")
+@Plugin(type = Command.class)
 public class FlatFieldCorrectCommand implements Command {
 
     @Parameter

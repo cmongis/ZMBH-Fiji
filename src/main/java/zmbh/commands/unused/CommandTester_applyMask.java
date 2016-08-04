@@ -21,7 +21,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>deprecated CMD applyMask", label="")
+@Plugin(type = Command.class)
 public class CommandTester_applyMask implements Command {
 
     @Parameter

@@ -27,7 +27,7 @@ import zmbh.commands.util.ExtractSliceCommand;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Add brightField alldir", label="")
+@Plugin(type = Command.class)
 public class AddBrightfield implements Command {
     
     @Parameter

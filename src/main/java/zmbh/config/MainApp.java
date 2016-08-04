@@ -78,11 +78,4 @@ public class MainApp extends Application {
     public Stage getPrimaryStage() {
         return this.primaryStage;
     }
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

@@ -32,7 +32,7 @@ import zmbh.commands.ImageJ1PluginAdapter;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Measure>CMD Make Measurements V4", label="")
+@Plugin(type = Command.class)
 public class MakeMeasurementsV4 implements Command {
     
     @Parameter

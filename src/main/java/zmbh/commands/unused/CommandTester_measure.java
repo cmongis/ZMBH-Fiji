@@ -13,7 +13,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>deprecated CMD measure", label="")
+@Plugin(type = Command.class)
 public class CommandTester_measure implements Command {
 
     @Override

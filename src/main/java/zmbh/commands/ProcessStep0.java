@@ -21,12 +21,9 @@ import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import zmbh.commands.annotation.RunAnnotationCommand_allDir;
-import zmbh.commands.annotation.RunComposeImg;
 import zmbh.commands.correction.ChromaCorrect;
 import zmbh.commands.correction.GetFFImg;
 import zmbh.commands.measure.GetRatioImage;
-import zmbh.commands.measure.RunMeasurementsV4_allDir;
 import zmbh.commands.util.AddSliceToStack;
 import zmbh.config.Get4ImgStack;
 import zmbh.config.LoadJSON2;
@@ -36,8 +33,8 @@ import zmbh.config.LoadJSON2;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process FULL", label="")
-public class Process implements Command {
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 0", label="")
+public class ProcessStep0 implements Command {
     
     @Parameter
     CommandService cmdService;
@@ -47,9 +44,6 @@ public class Process implements Command {
     
     @Parameter(type = ItemIO.INPUT)
     String rawStackDirPath;
-    
-    @Parameter(type = ItemIO.INPUT)
-    String segResultDirPath;
     
     @Parameter(type = ItemIO.INPUT)
     String resultDirPath;
@@ -67,38 +61,22 @@ public class Process implements Command {
     File bfpFlatFieldFile;
     
     @Parameter(type = ItemIO.INPUT)
-    String landMarkFilePath;
-    
-    @Parameter(type = ItemIO.INPUT)
-    File rScript;
-    
-    @Parameter(type = ItemIO.INPUT)
-    String rLibPath;
+    String landMarkFilePath;   
     
     @Parameter(type = ItemIO.INPUT)
     File jsonFile;
-    
-    @Parameter(type = ItemIO.INPUT)
-    File resultDir_MEASURE_blueControl;
-    
-    @Parameter(type = ItemIO.INPUT)
-    File resultDir_MEASURE_wtControl;
-    
-    @Parameter(type = ItemIO.INPUT)
-    File phantomJS_dir;
     
     @Override
     public void run() {
         long t0 = System.nanoTime();
         
         File rawStackDir = new File(rawStackDirPath);
-        File segResultDir = new File(segResultDirPath);
         File resultDir = new File(resultDirPath);
         
         Future<CommandModule> promise;
         CommandModule promiseContent;
         
-        if(rawStackDir.isDirectory() && segResultDir.isDirectory() && resultDir.isDirectory()){
+        if(rawStackDir.isDirectory() && resultDir.isDirectory()){
             try {
                 
                 File resultDir_STACKS = new File(resultDir.getPath() + "/0_STACKS");
@@ -183,116 +161,22 @@ public class Process implements Command {
                     promiseContent = promise.get();
                     Dataset extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
                     
-                    /*
-                    promise = cmdService.run(GetRatioImage.class, true,
-                            "stack", inDataset,
-                            "sliceNum1", 1,
-                            "sliceNum2", 3);
-                    promiseContent = promise.get();
-                    ratioDataset  = (Dataset) promiseContent.getOutput("ratioDataset");
-
-                    promise = cmdService.run(AddSliceToStack.class, true,
-                            "stack", extentedStack,
-                            "slice", ratioDataset);
-                    promiseContent = promise.get();
-                    extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
-                    */
                     
                     ioService.save(extentedStack, resultDir_STACKS_extendedStacks + "/" + extentedStack.getName());
                 }
                 
-                File resultDir_MEASURE = new File(resultDir.getPath() + "/1_MEASURE");
-                resultDir_MEASURE.mkdir();
                 
-                //File resultDir_Measure_rawMeasurements = new File(resultDir_MEASURE.getPath() + "/raw measurements");
-                //resultDir_Measure_rawMeasurements.mkdir();
-                
-                // Make measurements on all extended stacks
-                promise = cmdService.run(RunMeasurementsV4_allDir.class, true,
-                        "inputStackDir", resultDir_STACKS_extendedStacks,
-                        "cellDir", segResultDir,
-                        "saveDir", resultDir_MEASURE);
-                promise.get();
-                
-                
-                
-                // Run R processing script       
-                /*
-                ProcessBuilder builder = new ProcessBuilder(
-                        "Rscript",
-                        rScript.getAbsolutePath(),
-                        resultDir_MEASURE.getAbsolutePath(),
-                        rLibPath);                
-                builder.inheritIO();
-                try {
-                    java.lang.Process process = builder.start();
-                    process.waitFor();
-                } catch (IOException ex) {
-                    Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                */
-                // Run R processing script               
-                ProcessBuilder builder = new ProcessBuilder(
-                        "Rscript",
-                        rScript.getAbsolutePath(),
-                        resultDir_MEASURE.getAbsolutePath(),
-                        rLibPath,
-                        resultDir_MEASURE_blueControl.getAbsolutePath(),
-                        resultDir_MEASURE_wtControl.getAbsolutePath(),
-                        phantomJS_dir.getAbsolutePath());                
-                builder.inheritIO();
-                try {
-                    java.lang.Process process = builder.start();
-                    process.waitFor();
-                } catch (IOException ex) {
-                    Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                
-                
-                File resultDir_ANNOTATION = new File(resultDir.getPath() + "/2_ANNOTATION");
-                resultDir_ANNOTATION.mkdir();
-                
-                File resultDir_ANNOTATION_annotatedStacks = new File(resultDir_ANNOTATION.getPath() + "/annotated stacks");
-                resultDir_ANNOTATION_annotatedStacks.mkdir();
-                
-                 File resultDir_Measure_annotatedRecords = new File(resultDir_MEASURE.getPath() + "/annotatedRecords");
-                
-                // Run image annotation
-                promise = cmdService.run(RunAnnotationCommand_allDir.class, true,
-                        "inputStackDir", resultDir_STACKS_extendedStacks,
-                        "annotedRecordDir", resultDir_Measure_annotatedRecords,
-                        "cellDir", segResultDir,
-                        "saveDir", resultDir_ANNOTATION_annotatedStacks);
-                promise.get();
-                
-                
-                File resultDir_ANNOTATION_compositeImg = new File(resultDir_ANNOTATION.getPath() + "/composite Images");
-                resultDir_ANNOTATION_compositeImg.mkdir();
-
-                // Run composite image generation
-                for(int i = 0; i < 5; i++){
-                    promise = cmdService.run(RunComposeImg.class, true,
-                        "stackDirPath", resultDir_STACKS_extendedStacks.getPath(),
-                        "cellDirPath", segResultDir.getPath(),
-                        "recordClassDirPath", resultDir_Measure_annotatedRecords.getPath(),
-                        "sliceNumber", i,
-                        "isWell", true,
-                        "saveDir", resultDir_ANNOTATION_compositeImg.getPath());
-                promise.get();
-                }
                 
                 long t1 = System.nanoTime();
                 long sec = TimeUnit.NANOSECONDS.toSeconds(t1 - t0);
                 System.out.println(String.format("Process DONE: %d s", sec));
                 
             } catch (InterruptedException ex) {
-                Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProcessStep0.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
-                Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProcessStep0.class.getName()).log(Level.SEVERE, null, ex);
             } catch (IOException ex) {
-                Logger.getLogger(Process.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ProcessStep0.class.getName()).log(Level.SEVERE, null, ex);
             }         
         }
         else{

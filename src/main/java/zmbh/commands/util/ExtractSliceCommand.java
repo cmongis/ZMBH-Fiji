@@ -21,7 +21,7 @@ import org.scijava.plugin.Plugin;
 
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Util>CMD Extract slice", label="")
+@Plugin(type = Command.class)
 public class ExtractSliceCommand implements Command {
     
     @Parameter

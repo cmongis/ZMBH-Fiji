@@ -26,7 +26,7 @@ import zmbh.commands.util.ConvertDatasetEncodingCommand;
  */
 
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Correction>CMD DarkField & Flatfield correct slice", label="")
+@Plugin(type = Command.class)
 public class SliceCorrectCommand_DarkField_FlatField implements Command {
     
     @Parameter

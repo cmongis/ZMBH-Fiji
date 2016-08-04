@@ -32,7 +32,7 @@ import zmbh.commands.ImageJ1PluginAdapter;
  * @author Guillaume
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>FX>JavaFX Plugin")
+@Plugin(type = Command.class, menuPath = "Dev-commands>Stack Config Builder")
 public class FxPlugin implements Command {
     
     @Parameter

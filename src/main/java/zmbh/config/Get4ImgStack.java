@@ -23,7 +23,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Config>Get 4 Img Stack", label="")
+@Plugin(type = Command.class)
 public class Get4ImgStack implements Command {
     
     @Parameter

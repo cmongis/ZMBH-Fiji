@@ -21,7 +21,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>deprecated CMD readMatFile_getCellInfo", label="")
+@Plugin(type = Command.class)
 public class CommandTester_matFile_cell implements Command {
     
     @Parameter
