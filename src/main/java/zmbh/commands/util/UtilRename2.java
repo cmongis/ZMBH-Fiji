@@ -19,7 +19,7 @@ import org.scijava.plugin.Plugin;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Util>Rename2")
+@Plugin(type = Command.class, menuPath = "Dev-commands>Util>Rename brightfield for segmentation")
 public class UtilRename2 implements Command {
 
     @Parameter
