@@ -5,16 +5,23 @@
  */
 package zmbh.commands;
 
+import bunwarpj.MiscTools;
+import bunwarpj.Param;
+import bunwarpj.Transformation;
+import bunwarpj.bUnwarpJ_;
 import io.scif.services.DatasetIOService;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
+import net.imagej.axis.Axes;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;
@@ -88,7 +95,9 @@ public class ProcessStep0 implements Command {
                 promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
                 promiseContent = promise.get();
                 Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
-            
+                
+                
+                
                 
                 // Get 4 image stacks
                 File[] fileStackList = rawStackDir.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
@@ -119,14 +128,23 @@ public class ProcessStep0 implements Command {
                 // Chromatic aberration correction on 300ms images exposure and 1s image expose
                 // 0(mCherry300) & 2(sfGFP300)
                 // 1(mCherry1000) & 3(sfGFP1000)
+                Stack<Point> sourcePoints = new Stack<>();
+                Stack<Point> targetPoints = new Stack<>();
+                Param parameter = new Param(2, 0, 3, 4, 0, 0, 1, 0, 0, 0.01);
+                MiscTools.loadPoints(landMarkFilePath, sourcePoints, targetPoints);
+                Dataset crapstack = ioService.open(mCherryFlatFieldFile.getPath());
+                Transformation warp = bUnwarpJ_.computeTransformationBatch((int)crapstack.dimension(0), (int)crapstack.dimension(1), (int)crapstack.dimension(0), (int)crapstack.dimension(1), sourcePoints, targetPoints, parameter);
+                crapstack = null;
+                
                 File[] stackFileList = resultDir_STACKS_correctedStacks.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
                 for(File stack : stackFileList){
-                    Dataset inStack = ioService.open(stack.getPath());
+                    Dataset inStack = ioService.open(stack.getPath());                    
                     promise = cmdService.run(ChromaCorrect.class, true,
                             "stack", inStack,
                             "sourceSlice", 1,
                             "targetSlice", 0,
-                            "landMarkFilePath", landMarkFilePath);
+                            "landMarkFilePath", landMarkFilePath,
+                            "warp", warp);
                     promiseContent = promise.get();                    
                     Dataset tmpStack = (Dataset) promiseContent.getOutput("outStack");
                     /*

@@ -34,18 +34,26 @@ public class myBunWarpJ implements Command {
     @Parameter(type = ItemIO.OUTPUT)
     ImagePlus correctedSource;
     
+    @Parameter(type = ItemIO.INPUT)
+    Transformation warp;
+    
     @Override
     public void run() {
+        /*
         int sourceWidth = sourceImp.getWidth();
         int sourceHeight = sourceImp.getHeight();
         int targetWidth = targetImp.getWidth();
         int targetHeight = targetImp.getHeight();
+        Param parameter = new Param(2, 0, 3, 4, 0, 0, 1, 0, 0, 0.01);
+        
         Stack<Point> sourcePoints = new Stack<>();
         Stack<Point> targetPoints = new Stack<>();
-        Param parameter = new Param(2, 0, 3, 4, 0, 0, 1, 0, 0, 0.01);
+        
         
         MiscTools.loadPoints(landMarkFilePath, sourcePoints, targetPoints);
         Transformation warp = bUnwarpJ_.computeTransformationBatch(sourceWidth, sourceHeight, targetWidth, targetHeight, sourcePoints, targetPoints, parameter);
+        */
+
         MiscTools.applyTransformationToSourceMT(sourceImp, targetImp, warp.getIntervals(), warp.getDirectDeformationCoefficientsX(), warp.getDirectDeformationCoefficientsY());
         sourceImp.resetDisplayRange();
         correctedSource = sourceImp;

@@ -5,6 +5,7 @@
  */
 package zmbh.commands.correction;
 
+import bunwarpj.Transformation;
 import ij.ImagePlus;
 import io.scif.services.DatasetIOService;
 import java.util.concurrent.ExecutionException;
@@ -57,6 +58,9 @@ public class ChromaCorrect implements Command {
     @Parameter(type = ItemIO.OUTPUT)
     Dataset outStack;
     
+    @Parameter(type = ItemIO.INPUT)
+    Transformation warp;
+    
     @Override
     public void run() {
         
@@ -78,7 +82,7 @@ public class ChromaCorrect implements Command {
             targetImp.resetDisplayRange();
             
             // Perform correction with bUnwarpJ
-            promise = cmdService.run(myBunWarpJ.class, true, "sourceImp", sourceImp, "targetImp", targetImp, "landMarkFilePath", landMarkFilePath);
+            promise = cmdService.run(myBunWarpJ.class, true, "sourceImp", sourceImp, "targetImp", targetImp, "landMarkFilePath", landMarkFilePath, "warp", warp);
             promiseContent = promise.get();
             ImagePlus correctedSource = (ImagePlus) promiseContent.getOutput("correctedSource");
             Img img = ImageJFunctions.wrap(correctedSource);
