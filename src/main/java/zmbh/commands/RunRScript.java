@@ -36,8 +36,6 @@ public class RunRScript implements Command {
     @Parameter(type = ItemIO.INPUT)
     File resultDir_MEASURE_wtControl;
     
-    @Parameter(type = ItemIO.INPUT)
-    File phantomJS_dir;
     
     @Override
     public void run() {
@@ -50,8 +48,7 @@ public class RunRScript implements Command {
                 resultDir_MEASURE.getAbsolutePath(),
                 rLibPath,
                 resultDir_MEASURE_blueControl.getAbsolutePath(),
-                resultDir_MEASURE_wtControl.getAbsolutePath(),
-                phantomJS_dir.getAbsolutePath());                
+                resultDir_MEASURE_wtControl.getAbsolutePath());                
         builder.inheritIO();
         try {
             java.lang.Process process = builder.start();

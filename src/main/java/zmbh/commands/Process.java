@@ -67,7 +67,7 @@ public class Process implements Command {
     File bfpFlatFieldFile;
     
     @Parameter(type = ItemIO.INPUT)
-    String landMarkFilePath;
+    File landMarkFile;
     
     @Parameter(type = ItemIO.INPUT)
     File rScript;
@@ -83,9 +83,6 @@ public class Process implements Command {
     
     @Parameter(type = ItemIO.INPUT)
     File resultDir_MEASURE_wtControl;
-    
-    @Parameter(type = ItemIO.INPUT)
-    File phantomJS_dir;
     
     @Override
     public void run() {
@@ -148,7 +145,7 @@ public class Process implements Command {
                             "stack", inStack,
                             "sourceSlice", 1,
                             "targetSlice", 0,
-                            "landMarkFilePath", landMarkFilePath);
+                            "landMarkFilePath", landMarkFile.getAbsolutePath());
                     promiseContent = promise.get();                    
                     Dataset tmpStack = (Dataset) promiseContent.getOutput("outStack");
                     /*
@@ -238,8 +235,7 @@ public class Process implements Command {
                         resultDir_MEASURE.getAbsolutePath(),
                         rLibPath,
                         resultDir_MEASURE_blueControl.getAbsolutePath(),
-                        resultDir_MEASURE_wtControl.getAbsolutePath(),
-                        phantomJS_dir.getAbsolutePath());                
+                        resultDir_MEASURE_wtControl.getAbsolutePath());                
                 builder.inheritIO();
                 try {
                     java.lang.Process process = builder.start();
@@ -280,7 +276,7 @@ public class Process implements Command {
                         "sliceNumber", i,
                         "isWell", true,
                         "saveDir", resultDir_ANNOTATION_compositeImg.getPath());
-                promise.get();
+                    promise.get();
                 }
                 
                 long t1 = System.nanoTime();

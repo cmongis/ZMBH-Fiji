@@ -50,6 +50,12 @@ public class ProcessStep1 implements Command {
     @Parameter(type = ItemIO.INPUT)
     String rLibPath;
     
+    @Parameter(type = ItemIO.INPUT)
+    File resultDir_MEASURE_blueControl;
+    
+    @Parameter(type = ItemIO.INPUT)
+    File resultDir_MEASURE_wtControl;
+    
     
     @Override
     public void run() {
@@ -80,7 +86,9 @@ public class ProcessStep1 implements Command {
                         "Rscript",
                         rScript.getAbsolutePath(),
                         resultDir_MEASURE.getAbsolutePath(),
-                        rLibPath);                
+                        rLibPath,
+                        resultDir_MEASURE_blueControl.getAbsolutePath(),
+                        resultDir_MEASURE_wtControl.getAbsolutePath());                
                 builder.inheritIO();
                 try {
                     java.lang.Process process = builder.start();

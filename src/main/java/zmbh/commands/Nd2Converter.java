@@ -19,7 +19,7 @@ import org.scijava.plugin.Plugin;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class)
+@Plugin(type = Command.class, menuPath = "Dev-commands>Util>nd2 converter")
 public class Nd2Converter implements Command {
     
     @Parameter(type = ItemIO.INPUT)

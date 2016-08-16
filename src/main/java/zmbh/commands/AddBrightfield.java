@@ -27,7 +27,7 @@ import zmbh.commands.util.ExtractSliceCommand;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class)
+@Plugin(type = Command.class, menuPath = "Dev-commands>Util>add brightfield to stack")
 public class AddBrightfield implements Command {
     
     @Parameter

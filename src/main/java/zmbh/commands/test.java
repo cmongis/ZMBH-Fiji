@@ -7,6 +7,7 @@ package zmbh.commands;
 
 import io.scif.services.DatasetIOService;
 import java.util.List;
+import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
@@ -14,6 +15,7 @@ import org.scijava.module.ModuleService;
 import org.scijava.module.process.PostprocessorPlugin;
 import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.object.DefaultObjectService;
+import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
@@ -42,6 +44,9 @@ public class test implements Command {
     CommandService cmdService;
     
     @Parameter
+    ObjectService objService;
+    
+    @Parameter
     PluginService pluginService;
     
     @Parameter
@@ -61,6 +66,10 @@ public class test implements Command {
     
     @Override
     public void run() {
+        
+        List<Dataset> objects = objService.getObjects(Dataset.class);
+        System.out.println(objects.size());
+        
         //try {
         /*
         try {
@@ -136,7 +145,7 @@ public class test implements Command {
         } catch (IOException ex) {
         Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
         }
-         */
+        
         List<PreprocessorPlugin> pre = pluginService.createInstancesOfType(PreprocessorPlugin.class);
         for(PreprocessorPlugin p : pre){
             System.out.println(p.getClass().getName());
@@ -147,6 +156,7 @@ public class test implements Command {
         for(PostprocessorPlugin p : post){
             System.out.println(p.getClass().getName());
         }
+        */
         
     }
     
