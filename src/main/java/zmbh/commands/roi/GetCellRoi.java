@@ -27,32 +27,20 @@ import org.scijava.plugin.Plugin;
  */
 
 @Plugin(type = Command.class)
-public class GetBackGroundRoi implements Command {
+public class GetCellRoi implements Command {
     
-    
-    @Parameter(type = ItemIO.INPUT)
-    ShapeRoi fullImgRoi;
     
     @Parameter(type = ItemIO.INPUT)
     List<Roi> roiList;
     
     @Parameter(type = ItemIO.OUTPUT)
-    ShapeRoi backgroundRoi;
+    ShapeRoi cellRoi;
     
     @Override
     public void run() {
-        ArrayList<ShapeRoi> shapeRoiList = new ArrayList<>();
-        ArrayList<ShapeRoi> xorShapeRoiList = new ArrayList<>();
-        
+        ArrayList<ShapeRoi> shapeRoiList = new ArrayList<>();        
         roiList.forEach((roi) -> shapeRoiList.add(new ShapeRoi(roi)));
         
-         /*
-        shapeRoiList.forEach((roi) -> xorShapeRoiList.add(roi.xor(fullImgRoi)));  
-        if(!xorShapeRoiList.isEmpty()){
-            backgroundRoi = xorShapeRoiList.remove(0);
-            xorShapeRoiList.forEach((roi) -> backgroundRoi = backgroundRoi.xor(roi));
-        }
-        */
         ShapeRoi union = null;    
         if(!shapeRoiList.isEmpty()){
             union = shapeRoiList.remove(0);
@@ -60,7 +48,7 @@ public class GetBackGroundRoi implements Command {
                 union = union.or(roi);
             }
         }
-        backgroundRoi = union.xor(fullImgRoi);
+        cellRoi = union;
     }
     
 }

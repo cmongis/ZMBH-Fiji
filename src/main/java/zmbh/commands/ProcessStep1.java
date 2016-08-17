@@ -26,7 +26,7 @@ import zmbh.commands.measure.RunMeasurementsV4_allDir;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 1", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 1 (measure + Rscript)", label="")
 public class ProcessStep1 implements Command {
     
     @Parameter

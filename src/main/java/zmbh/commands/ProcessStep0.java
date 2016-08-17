@@ -40,7 +40,7 @@ import zmbh.config.LoadJSON2;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 0", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 0 (darkfield + flatfield + chroma + ratio)", label="")
 public class ProcessStep0 implements Command {
     
     @Parameter

@@ -26,7 +26,7 @@ import zmbh.commands.annotation.RunComposeImg;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 2", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process Step 2 (annotated stacks)", label="")
 public class ProcessStep2 implements Command {
     
     @Parameter

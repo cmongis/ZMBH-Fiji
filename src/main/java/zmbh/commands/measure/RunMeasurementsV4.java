@@ -202,7 +202,7 @@ public class RunMeasurementsV4 implements Command {
                 csvFilePrinter.close();
             }
             
-            /*
+            
             // Same measurement procedure for the background of the image
             // The background roi is the inverse of the union of all rois in the image
             ArrayList<ArrayList<String>> backgroundResults = new ArrayList<>();
@@ -235,7 +235,8 @@ public class RunMeasurementsV4 implements Command {
                 writer.close();
                 csvFilePrinter.close();
             }
-            */
+            
+            
             Date stopRun = new Date();
             System.out.println("RunMeasurementsV4 exec time : " + (stopRun.getTime() - startRun.getTime())/1000 + "s");
             System.out.println("RunMeasurementsV4 blobs processed : " + roiList.size());            

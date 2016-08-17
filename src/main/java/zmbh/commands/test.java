@@ -5,15 +5,20 @@
  */
 package zmbh.commands;
 
+import bunwarpj.MiscTools;
+import ij.ImagePlus;
 import io.scif.services.DatasetIOService;
-import java.util.List;
+import java.awt.Point;
+import java.io.File;
+import java.util.Stack;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
+import net.imglib2.img.ImagePlusAdapter;
+import net.imglib2.img.Img;
+import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandService;
 import org.scijava.module.ModuleService;
-import org.scijava.module.process.PostprocessorPlugin;
-import org.scijava.module.process.PreprocessorPlugin;
 import org.scijava.object.DefaultObjectService;
 import org.scijava.object.ObjectService;
 import org.scijava.plugin.Parameter;
@@ -63,100 +68,50 @@ public class test implements Command {
     
     //@Parameter
     //String saveDir;
+    @Parameter(label = "Landmarks File", required = false)
+    File landmarksFile = null;
+
+    @Parameter(type = ItemIO.INPUT)
+    Dataset sourceDataset;
+
+    @Parameter(type = ItemIO.INPUT)
+    Dataset targetDataset;
+
+    @Parameter(type = ItemIO.OUTPUT)
+    Dataset outputDataset;
+    
+      /**
+     * Image representation for source image
+     */
+    private ImagePlus sourceImp;
+    /**
+     * Image representation for target image
+     */
+    private ImagePlus targetImp;
     
     @Override
     public void run() {
+        Runtime.getRuntime().gc();
+        this.sourceImp = ImageJ1PluginAdapter.unwrapDataset(sourceDataset).duplicate();
+        this.targetImp = ImageJ1PluginAdapter.unwrapDataset(targetDataset);
+        Stack<Point> sourceStack = new Stack<>();
+        Stack<Point> targetStack = new Stack<>();
+        bunwarpj.Param parameter = new bunwarpj.Param(2, 0, 3, 4, 0, 0, 1, 0, 0, 0.01);//(mode, maxImageSubsamplingFactor, min_scale_deformation, max_scale_deformation, divWeight, curlWeight, landmarkWeight, imageWeight, consistencyWeight, stopThreshold);
+//        sourceImp.setProcessor(sourceImp.getProcessor().convertToFloat());
+//        targetImp.setProcessor(targetImp.getProcessor().convertToFloat());
+
+//        sourceImp = convertToGray32(sourceImp);
+//        targetImp = convertToGray32(targetImp);
+                
+        MiscTools.loadPoints(landmarksFile.getAbsolutePath(), sourceStack, targetStack);
+
+        bunwarpj.Transformation transformation = bunwarpj.bUnwarpJ_.computeTransformationBatch(sourceImp.getWidth(), sourceImp.getHeight(), targetImp.getWidth(), targetImp.getHeight(), sourceStack, targetStack, parameter);
+        bunwarpj.MiscTools.applyTransformationToSourceMT(targetImp, targetImp, transformation.getIntervals(), transformation.getDirectDeformationCoefficientsX(), transformation.getDirectDeformationCoefficientsY());
+        sourceImp.resetDisplayRange();
+        Img img = ImagePlusAdapter.wrapImgPlus(sourceImp);
         
-        List<Dataset> objects = objService.getObjects(Dataset.class);
-        System.out.println(objects.size());
-        
-        //try {
-        /*
-        try {
-        Future<CommandModule> promise = cmdService.run(testUselesscreatedataset.class, true);
-        CommandModule promiseContent = promise.get();
-        Dataset outDataset = (Dataset) promiseContent.getOutput("outDataset");
-        if(outDataset != null){
-        System.out.println(outDataset.getName());
-        }
-        } catch (InterruptedException ex) {
-        Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-        Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-         */
-        //bUnwarpJ_ bUnwarpj = new bUnwarpJ_();
-        //bUnwarpj.run("");
-        /*
-        Future<CommandModule> promise = cmdService.run(LoadJSON2.class, true);
-        CommandModule promiseContent = promise.get();
-        Map<String, Map<String, Integer>> map = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
-        for(Map.Entry<String, Map<String, Integer>> entry : map.entrySet()){
-        System.out.println(entry.getKey());
-        for(Map.Entry<String, Integer> e:entry.getValue().entrySet()){
-        System.out.println(e.getKey());
-        System.out.println(e.getValue());
-        }
-        System.out.println("");
-        }
-         */
-        /*
-        Future<CommandModule> promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
-        CommandModule promiseContent = promise.get();
-        Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
-        promise = cmdService.run(Get4ImgStack.class, true,
-        "imageMap", imageMap);
-        promiseContent = promise.get();
-        Dataset dataset = (Dataset) promiseContent.getOutput("outStack");
-        uiService.show(dataset);
-         */
-        /*
-        File[] fileList = nd2Dir.listFiles((File pathname) -> pathname.getName().endsWith(".nd2"));
-        for(File file : fileList){
-        String split = file.getName().split("\\.")[0];
-        String[] split2 = split.split("_");
-        String well = split2[0];
-        String seq = split2[1];
-        for(int i = 0; i < 12; i++){
-        String outName = well + "_" + "Point"+ String.format("%04d", i) + "_" + seq + ".tif";
-        outName = saveDir + "/" + outName;
-        ProcessBuilder builder = new ProcessBuilder(
-        pathToConverter,
-        "-series",
-        Integer.toString(i),
-        file.getPath(),
-        outName);
-        builder.inheritIO();
-        for(String str : builder.command()){
-        System.out.print(str + " ");
-        }
-        System.out.println("");
-        try {
-        java.lang.Process process = builder.start();
-        process.waitFor();
-        } catch (IOException ex) {
-        Logger.getLogger(RunRScript.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-        Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }
-        }
-        /*
-        } catch (IOException ex) {
-        Logger.getLogger(test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        List<PreprocessorPlugin> pre = pluginService.createInstancesOfType(PreprocessorPlugin.class);
-        for(PreprocessorPlugin p : pre){
-            System.out.println(p.getClass().getName());
-        }
-        System.out.println("");
-        
-        List<PostprocessorPlugin> post = pluginService.createInstancesOfType(PostprocessorPlugin.class);
-        for(PostprocessorPlugin p : post){
-            System.out.println(p.getClass().getName());
-        }
-        */
+        outputDataset = datasetService.create(img);//        init();
+        uiService.show(outputDataset);
         
     }
     
