@@ -41,6 +41,7 @@ import zmbh.commands.roi.ComputeConvexHullRoi;
 import zmbh.commands.roi.ConvertPixelIndexToPoint;
 import zmbh.commands.roi.GetBackGroundRoi;
 import zmbh.commands.ImageJ1PluginAdapter;
+import zmbh.commands.roi.GetCellRoi;
 import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.roi.RoiDataset;
 
@@ -235,6 +236,41 @@ public class RunMeasurementsV4 implements Command {
                 writer.close();
                 csvFilePrinter.close();
             }
+            
+            
+            
+             /*
+            // Same measurement procedure for the foreground of the image
+            ArrayList<ArrayList<String>> foregroundResults = new ArrayList<>();
+            for(int sliceNumber = 0; sliceNumber < extentedStack.dimension(2); sliceNumber++){
+                backgroundResults.add(new ArrayList<>());
+            }
+            
+            promise = cmdService.run(GetCellRoi.class, false, "roiList", roiList);
+            promiseContent = promise.get();
+            ShapeRoi foregroundRoi = (ShapeRoi) promiseContent.getOutput("cellRoi");
+            
+            promise = cmdService.run(MakeMeasurementsV4.class, false, "inDatasetImp", inDatasetImp, "nbSlice", extentedStack.dimension(2), "roi", foregroundRoi, "analyzer", analyzer);
+
+            promiseContent = promise.get();
+            ResultsTable resultsTable2 = (ResultsTable) promiseContent.getOutput("res");
+            for(int i = 0; i < foregroundResults.size(); i++){
+                    foregroundResults.get(i).add(resultsTable2.getRowAsString(i));
+            }
+             // save in a file
+            for(int i = 0; i < foregroundResults.size(); i++){               
+                writer = new FileWriter(saveDir.getPath() + "/" + extentedStack.getName() + "_slice" + i + "_foreground.csv");
+                format = CSVFormat.DEFAULT.withHeader(Analyzer.getResultsTable().getHeadings());
+                csvFilePrinter = new CSVPrinter(writer, format);
+                for(String records : foregroundResults.get(i)){
+                    String[] split = records.split("\\t");
+                    csvFilePrinter.printRecord(split);
+                }
+                writer.flush();
+                writer.close();
+                csvFilePrinter.close();
+            }
+            */
             
             
             Date stopRun = new Date();

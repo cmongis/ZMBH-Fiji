@@ -9,10 +9,18 @@ import bunwarpj.MiscTools;
 import bunwarpj.Param;
 import bunwarpj.Transformation;
 import bunwarpj.bUnwarpJ_;
+import ij.ImagePlus;
+import ij.gui.Roi;
+import ij.gui.ShapeRoi;
+import ij.measure.Measurements;
+import ij.measure.ResultsTable;
+import ij.plugin.filter.Analyzer;
 import io.scif.services.DatasetIOService;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.ExecutionException;
@@ -27,12 +35,18 @@ import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import zmbh.commands.annotation.AnnotationCommand;
 import zmbh.commands.annotation.RunAnnotationCommand_allDir;
 import zmbh.commands.annotation.RunComposeImg;
 import zmbh.commands.correction.ChromaCorrect;
 import zmbh.commands.correction.GetFFImg;
 import zmbh.commands.measure.GetRatioImage;
 import zmbh.commands.measure.RunMeasurementsV4_allDir;
+import zmbh.commands.roi.ComputeConvexHullRoi;
+import zmbh.commands.roi.ConvertPixelIndexToPoint;
+import zmbh.commands.roi.GetBackGroundRoi;
+import zmbh.commands.segmentation.CellXseed;
+import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.util.AddSliceToStack;
 import zmbh.config.Get4ImgStack;
 import zmbh.config.LoadJSON2;
@@ -42,7 +56,7 @@ import zmbh.config.LoadJSON2;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>CMD Process FULL", label="")
+@Plugin(type = Command.class)
 public class Process implements Command {
     
     @Parameter
@@ -113,10 +127,11 @@ public class Process implements Command {
                 promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
                 promiseContent = promise.get();
                 Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
-            
                 
-                // Get 4 image stacks
+                
                 File[] fileStackList = rawStackDir.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
+                
+                // Get 4 image stacks               
                 for(File stack : fileStackList){
                     Dataset inStack = ioService.open(stack.getPath());
                     promise = cmdService.run(Get4ImgStack.class, true,
@@ -195,23 +210,16 @@ public class Process implements Command {
                     promiseContent = promise.get();
                     Dataset extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
                     
-                    /*
-                    promise = cmdService.run(GetRatioImage.class, true,
-                            "stack", inDataset,
-                            "sliceNum1", 1,
-                            "sliceNum2", 3);
-                    promiseContent = promise.get();
-                    ratioDataset  = (Dataset) promiseContent.getOutput("ratioDataset");
-
-                    promise = cmdService.run(AddSliceToStack.class, true,
-                            "stack", extentedStack,
-                            "slice", ratioDataset);
-                    promiseContent = promise.get();
-                    extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
-                    */
-                    
                     ioService.save(extentedStack, resultDir_STACKS_extendedStacks + "/" + extentedStack.getName());
                 }
+                
+                File resultDir_STACKS_extendedStacks_rmBckgrd = new File(resultDir_STACKS.getPath() + "/extended stacks _ removed background");
+                resultDir_STACKS_extendedStacks_rmBckgrd.mkdir();
+                
+                
+                
+                
+                
                 
                 File resultDir_MEASURE = new File(resultDir.getPath() + "/1_MEASURE");
                 resultDir_MEASURE.mkdir();

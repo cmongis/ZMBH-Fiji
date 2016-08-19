@@ -56,6 +56,8 @@ public class ProcessStep1 implements Command {
     @Parameter(type = ItemIO.INPUT)
     File resultDir_MEASURE_wtControl;
     
+    @Parameter(type = ItemIO.OUTPUT)
+    File measureDir;
     
     @Override
     public void run() {
@@ -100,6 +102,8 @@ public class ProcessStep1 implements Command {
                 long t1 = System.nanoTime();
                 long sec = TimeUnit.NANOSECONDS.toSeconds(t1 - t0);
                 System.out.println(String.format("Process DONE: %d s", sec));
+                
+                measureDir = resultDir_MEASURE;
                 
             } catch (InterruptedException ex) {
                 Logger.getLogger(ProcessStep1.class.getName()).log(Level.SEVERE, null, ex);

@@ -29,6 +29,7 @@ import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import zmbh.commands.correction.ChromaCorrect;
+import zmbh.commands.correction.GetBackgroundCorrectedImages;
 import zmbh.commands.correction.GetFFImg;
 import zmbh.commands.measure.GetRatioImage;
 import zmbh.commands.util.AddSliceToStack;
@@ -53,6 +54,9 @@ public class ProcessStep0 implements Command {
     String rawStackDirPath;
     
     @Parameter(type = ItemIO.INPUT)
+    String segResultDirPath;
+    
+    @Parameter(type = ItemIO.INPUT)
     String resultDirPath;
     
     @Parameter(type = ItemIO.INPUT)
@@ -68,10 +72,13 @@ public class ProcessStep0 implements Command {
     File bfpFlatFieldFile;
     
     @Parameter(type = ItemIO.INPUT)
-    String landMarkFilePath;   
+    File landMarkFile;   
     
     @Parameter(type = ItemIO.INPUT)
     File jsonFile;
+    
+    @Parameter(type = ItemIO.OUTPUT)
+    File correctedDir;
     
     @Override
     public void run() {
@@ -95,9 +102,6 @@ public class ProcessStep0 implements Command {
                 promise = cmdService.run(LoadJSON2.class, true, "jsonFile", jsonFile);
                 promiseContent = promise.get();
                 Map<String, Map<String, Integer>> imageMap = (Map<String, Map<String, Integer>>) promiseContent.getOutput("outObject");
-                
-                
-                
                 
                 // Get 4 image stacks
                 File[] fileStackList = rawStackDir.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
@@ -131,7 +135,7 @@ public class ProcessStep0 implements Command {
                 Stack<Point> sourcePoints = new Stack<>();
                 Stack<Point> targetPoints = new Stack<>();
                 Param parameter = new Param(2, 0, 3, 4, 0, 0, 1, 0, 0, 0.01);
-                MiscTools.loadPoints(landMarkFilePath, sourcePoints, targetPoints);
+                MiscTools.loadPoints(landMarkFile.getPath(), sourcePoints, targetPoints);
                 Dataset crapstack = ioService.open(mCherryFlatFieldFile.getPath());
                 Transformation warp = bUnwarpJ_.computeTransformationBatch((int)crapstack.dimension(0), (int)crapstack.dimension(1), (int)crapstack.dimension(0), (int)crapstack.dimension(1), sourcePoints, targetPoints, parameter);
                 crapstack = null;
@@ -143,19 +147,9 @@ public class ProcessStep0 implements Command {
                             "stack", inStack,
                             "sourceSlice", 1,
                             "targetSlice", 0,
-                            "landMarkFilePath", landMarkFilePath,
                             "warp", warp);
                     promiseContent = promise.get();                    
                     Dataset tmpStack = (Dataset) promiseContent.getOutput("outStack");
-                    /*
-                    promise = cmdService.run(ChromaCorrect.class, true,
-                            "stack", tmpStack,
-                            "sourceSlice", 3,
-                            "targetSlice", 1,
-                            "landMarkFilePath", landMarkFilePath);
-                    promiseContent = promise.get();
-                    tmpStack = (Dataset) promiseContent.getOutput("outStack");
-                    */
                     ioService.save(tmpStack, resultDir_STACKS_correctedStacks + "/" + tmpStack.getName());
                 }
                 
@@ -178,12 +172,20 @@ public class ProcessStep0 implements Command {
                             "slice", ratioDataset);
                     promiseContent = promise.get();
                     Dataset extentedStack = (Dataset) promiseContent.getOutput("extendedStack");
-                    
-                    
+                                      
                     ioService.save(extentedStack, resultDir_STACKS_extendedStacks + "/" + extentedStack.getName());
                 }
                 
+                File resultDir_STACKS_extendedStacks_rmBckgrd = new File(resultDir_STACKS.getPath() + "/extended stacks_removed background");
+                resultDir_STACKS_extendedStacks_rmBckgrd.mkdir();
                 
+                promise = cmdService.run(GetBackgroundCorrectedImages.class, true,
+                        "stackDir", resultDir_STACKS_extendedStacks,
+                        "cellDir", segResultDirPath,
+                        "saveDir", resultDir_STACKS_extendedStacks_rmBckgrd);
+                promise.get();
+                
+                correctedDir = resultDir_STACKS_extendedStacks_rmBckgrd;
                 
                 long t1 = System.nanoTime();
                 long sec = TimeUnit.NANOSECONDS.toSeconds(t1 - t0);

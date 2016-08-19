@@ -7,6 +7,7 @@ import bunwarpj.bUnwarpJ_;
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 import java.awt.Point;
+import java.io.File;
 import java.util.Stack;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
@@ -26,16 +27,15 @@ public class myBunWarpJ implements Command {
     ImagePlus targetImp;
     
     @Parameter(type = ItemIO.INPUT)
-    ImagePlus sourceImp;
+    ImagePlus sourceImp;    
     
     @Parameter(type = ItemIO.INPUT)
-    String landMarkFilePath;
+    Transformation warp;
     
     @Parameter(type = ItemIO.OUTPUT)
     ImagePlus correctedSource;
     
-    @Parameter(type = ItemIO.INPUT)
-    Transformation warp;
+    
     
     @Override
     public void run() {
