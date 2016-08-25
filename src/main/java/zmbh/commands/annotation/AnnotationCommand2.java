@@ -5,21 +5,15 @@
  */
 package zmbh.commands.annotation;
 
-import ij.IJ;
 import ij.ImagePlus;
 import ij.ImageStack;
 import ij.gui.Roi;
 import ij.process.ImageProcessor;
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.ColorModel;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -35,8 +29,6 @@ import zmbh.commands.segmentation.CellXseed;
 import zmbh.commands.roi.ComputeConvexHullRoi;
 import zmbh.commands.roi.ConvertPixelIndexToPoint;
 import zmbh.commands.ImageJ1PluginAdapter;
-import zmbh.commands.segmentation.CellRecord;
-import zmbh.commands.MyContrastAjuster;
 
 /**
  *
@@ -71,16 +63,6 @@ public class AnnotationCommand2 implements Command {
         for(int i = 0; i < inDataset.dimension(2); i++){
             imagePlus.setPosition(i+1, 1, 1);
             imagePlus.resetDisplayRange();
-            //imagePlus.show();
-            /*
-            MyContrastAjuster ca = new MyContrastAjuster();
-            ca.run("");
-            for(ActionListener a: ca.resetB.getActionListeners()) {
-                a.actionPerformed(new ActionEvent((Object) ca.resetB, ActionEvent.ACTION_PERFORMED, ""));
-            }
-            ca.done = true;
-            ca.close();
-            */
             ImageProcessor imp = imagePlus.getProcessor().convertToRGB();
             imp.setColor(Color.BLACK);
             imp.setLineWidth(1);
@@ -98,14 +80,11 @@ public class AnnotationCommand2 implements Command {
                 promiseContent = promise.get();
                 List<Point> pointArray = (List<Point>) promiseContent.getOutput("pointArray");
                 
-                //promise = cmdService.run(ComputeConvexHullRoi.class, false, "imgHeigth", (int) inDataset.dimension(1), "perimeterPixelListIndex", cellxSeed.getPerimeterPixelListIndex());
                 promise = cmdService.run(ComputeConvexHullRoi.class, false, "pointArray", pointArray);
                 promiseContent = promise.get();
                 Roi roi = (Roi) promiseContent.getOutput("roi");
                 roiList.add(roi);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(AnnotationCommand2.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
+            } catch (InterruptedException | ExecutionException ex) {
                 Logger.getLogger(AnnotationCommand2.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

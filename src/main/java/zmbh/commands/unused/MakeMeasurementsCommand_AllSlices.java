@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.measure;
+package zmbh.commands.unused;
 
 import zmbh.commands.correction.SliceCorrectCommand_DarkField_FlatField_AllSlices;
 import io.scif.services.DatasetIOService;
@@ -25,7 +25,6 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import zmbh.commands.util.ConvertDatasetEncodingCommand;
-import zmbh.commands.segmentation.LoadSegmentationMaskWithIdCommand;
 
 /**
  *

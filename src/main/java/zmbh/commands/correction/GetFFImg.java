@@ -8,8 +8,6 @@ package zmbh.commands.correction;
 import io.scif.services.DatasetIOService;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -81,15 +79,10 @@ public class GetFFImg implements Command {
                     inputStackDataset = (Dataset) promiseContent.getOutput("inputDataset");
                     
                     datasetioService.save(inputStackDataset, saveDir + "/" + inputStackDataset.getName());
-                } catch (IOException ex) {
-                    Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                //ij.WindowManager.closeAllWindows();
             }
         }
         else{

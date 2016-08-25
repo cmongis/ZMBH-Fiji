@@ -8,13 +8,9 @@ package zmbh.commands.annotation;
 import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.segmentation.CellXseed;
 import zmbh.commands.segmentation.CellRecord;
-import zmbh.commands.annotation.AnnotationCommand;
-import ij.plugin.ImagesToStack;
 import io.scif.services.DatasetIOService;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -22,9 +18,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;
@@ -38,7 +31,7 @@ import zmbh.commands.segmentation.LoadCellRecordList;
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>RUN Annotation", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>RUN Annotation (2 colors)", label="")
 public class RunAnnotationCommand implements Command {
     
     @Parameter
@@ -83,11 +76,7 @@ public class RunAnnotationCommand implements Command {
             promise = cmdService.run(AnnotationCommand.class, true,"inDataset", inDataset, "cellxSeedList", cellxSeedList, "cellRecordList", cellRecordList, "saveDir", saveDir);
             promiseContent = promise.get();
             
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RunAnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(RunAnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (InterruptedException | ExecutionException | IOException ex) {
             Logger.getLogger(RunAnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
         }
         

@@ -5,19 +5,13 @@
  */
 package zmbh.config;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.imagej.Dataset;
 import net.imagej.axis.AxisType;
 import net.imagej.axis.CalibratedAxis;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
-import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
@@ -35,9 +29,6 @@ public class GetStackStructure implements Command {
     
     @Parameter(type = ItemIO.INPUT)
     Dataset stack;
-    
-    //@Parameter(type = ItemIO.INPUT)
-    //String savePath;
     
     @Parameter(type = ItemIO.OUTPUT)
     StructureInfo structureInfo;
@@ -63,34 +54,6 @@ public class GetStackStructure implements Command {
             System.out.println(entry.getKey() + " : " + entry.getValue().getAxisType() + " : " + entry.getValue().getAxeDim());
         });
                
-        
-        /*
-        File saveFile = new File(savePath);
-        Future<CommandModule> promise = cmdService.run(SaveJSON.class, true,
-                "obj", structureInfo,
-                "saveFile", saveFile);        
-        try {
-            promise.get();
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(GetStackStructure.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-        promise = cmdService.run(LoadJSON.class, true,
-                "jsonFile", saveFile);
-        try {
-            CommandModule promiseContent = promise.get();
-            StructureInfo output = (StructureInfo) promiseContent.getOutput("outObject");
-            
-            System.out.println("");
-            output.getAxisMap().entrySet().stream().forEach((entry) -> {
-                System.out.println(entry.getKey() + " : " + entry.getValue().getAxisType() + " : " + entry.getValue().getAxeDim());
-            });
-        } catch (InterruptedException | ExecutionException ex) {
-            Logger.getLogger(GetStackStructure.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        */
-        
     }
     
 }

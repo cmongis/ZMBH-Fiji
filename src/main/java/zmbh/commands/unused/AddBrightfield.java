@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands;
+package zmbh.commands.unused;
 
 import io.scif.services.DatasetIOService;
 import java.io.File;
@@ -75,11 +75,7 @@ public class AddBrightfield implements Command {
                     
                     ioService.save(extendedStack, saveDir.getPath() + "/" + stack.getName());
                     
-                } catch (IOException ex) {
-                    Logger.getLogger(AddBrightfield.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AddBrightfield.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     Logger.getLogger(AddBrightfield.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

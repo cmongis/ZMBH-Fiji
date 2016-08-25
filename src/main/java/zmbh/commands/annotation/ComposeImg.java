@@ -103,11 +103,7 @@ public class ComposeImg implements Command {
             noblueCompDataset = (Dataset) promiseContent.getOutput("compDataset");
             
             
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ComposeImg.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(ComposeImg.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (InterruptedException | ExecutionException | IOException ex) {
             Logger.getLogger(ComposeImg.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

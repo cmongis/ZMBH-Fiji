@@ -5,8 +5,8 @@
  */
 package zmbh.commands.validation;
 
-import zmbh.commands.segmentation.LoadSegmentationMaskCommand;
-import zmbh.commands.segmentation.GetBinaryMaskFromSegmentationMask;
+import zmbh.commands.unused.LoadSegmentationMaskCommand;
+import zmbh.commands.unused.GetBinaryMaskFromSegmentationMask;
 import zmbh.commands.segmentation.CellRecord;
 import ij.ImagePlus;
 import ij.blob.Blob;
@@ -48,7 +48,7 @@ import zmbh.commands.segmentation.LoadCellRecordList;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Validation>CMD HumanEye Validation", label="")
+@Plugin(type = Command.class)
 public class HumanEyeValidation implements Command {
     
     @Parameter

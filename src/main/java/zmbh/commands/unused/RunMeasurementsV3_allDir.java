@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.measure;
+package zmbh.commands.unused;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;

@@ -79,9 +79,7 @@ public class DisplayCellRoi implements Command {
                     promiseContent = promise.get();
                     Roi roi = (Roi) promiseContent.getOutput("roi");
                     roiList.add(roi);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -114,11 +112,7 @@ public class DisplayCellRoi implements Command {
             roiManager.addRoi(imagePlus.getRoi());
             roiManager.select(0);
             
-        } catch (IOException ex) {
-            Logger.getLogger(DisplayCellRoi.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DisplayCellRoi.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (IOException | InterruptedException | ExecutionException ex) {
             Logger.getLogger(DisplayCellRoi.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

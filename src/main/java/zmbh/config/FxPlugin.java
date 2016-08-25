@@ -5,18 +5,13 @@
  */
 package zmbh.config;
 
-import ij.ImagePlus;
 import io.scif.services.DatasetIOService;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.WritableImage;
 import net.imagej.Dataset;
 import net.imagej.ImageJ;
-import net.imagej.display.DatasetView;
 import net.imagej.display.ImageDisplay;
 import net.imagej.display.ImageDisplayService;
 import org.scijava.ItemIO;
@@ -25,7 +20,6 @@ import org.scijava.command.CommandService;
 import org.scijava.display.DisplayService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import zmbh.commands.ImageJ1PluginAdapter;
 
 /**
  *
@@ -58,7 +52,6 @@ public class FxPlugin implements Command {
         
         try {
             Dataset dataset = ioService.open(stackFile.getPath());
-            //DatasetView view = (DatasetView) imageDisplayService.createDataView(dataset);
             ImageDisplay view = (ImageDisplay) displayService.createDisplayQuietly(dataset);
                        
             

@@ -1,7 +1,6 @@
 
 package zmbh.commands.measure;
 
-import zmbh.commands.correction.ChromaCorrect;
 import ij.ImagePlus;
 import ij.gui.Roi;
 import ij.gui.ShapeRoi;
@@ -34,14 +33,12 @@ import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.plugin.PluginService;
 import org.scijava.ui.UIService;
-import zmbh.commands.util.AddSliceToStack;
 import zmbh.commands.annotation.AnnotationCommand;
 import zmbh.commands.segmentation.CellXseed;
 import zmbh.commands.roi.ComputeConvexHullRoi;
 import zmbh.commands.roi.ConvertPixelIndexToPoint;
 import zmbh.commands.roi.GetBackGroundRoi;
 import zmbh.commands.ImageJ1PluginAdapter;
-import zmbh.commands.roi.GetCellRoi;
 import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.roi.RoiDataset;
 
@@ -110,14 +107,11 @@ public class RunMeasurementsV4 implements Command {
                     Roi roi = (Roi) promiseContent.getOutput("roi");
                     roiList.add(roi);
                     
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
-            
             // Set measurements parameters
             Analyzer analyzer = new Analyzer();
             Analyzer.setMeasurement(Measurements.AREA, true);

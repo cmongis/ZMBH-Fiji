@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.measure;
+package zmbh.commands.unused;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -23,7 +23,7 @@ import org.scijava.plugin.Plugin;
  */
 
 @Plugin(type = Command.class)
-public class MakeMeasurementsV2_allDir implements Command {
+public class MakeMeasurementsCommand_AllSlices_AllDir implements Command {
 
     @Parameter
     CommandService commandService;
@@ -62,7 +62,7 @@ public class MakeMeasurementsV2_allDir implements Command {
             
             if(inputStackFileList.length == masksFileList.length){
                 for(int i = 0; i < inputStackFileList.length; i++){
-                    promise = commandService.run(MakeMeasurementsV2.class, true,
+                    promise = commandService.run(MakeMeasurementsCommand_AllSlices.class, true,
                             "inputStackFile", inputStackFileList[i],
                             "maskFile", masksFileList[i],
                             "targetType", targetType,
@@ -78,8 +78,7 @@ public class MakeMeasurementsV2_allDir implements Command {
                         Logger.getLogger(MakeMeasurementsCommand_AllSlices_AllDir.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (ExecutionException ex) {
                         Logger.getLogger(MakeMeasurementsCommand_AllSlices_AllDir.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    //ij.WindowManager.getCurrentWindow().close();
+                    }                   
                 }
             }
             else{
@@ -89,6 +88,5 @@ public class MakeMeasurementsV2_allDir implements Command {
         else{
             System.err.println("Selection is not a directory");
         }        
-    }
-    
+    }    
 }

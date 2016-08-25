@@ -23,13 +23,8 @@
  */
 package zmbh.config;
 
-import ij.ImagePlus;
 import java.awt.image.BufferedImage;
-import static java.awt.image.ImageObserver.FRAMEBITS;
-import static java.awt.image.ImageObserver.HEIGHT;
-import static java.awt.image.ImageObserver.WIDTH;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -44,36 +39,24 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
-import javax.sound.midi.ControllerEventListener;
 import javax.swing.JFrame;
 import net.imagej.Dataset;
 import net.imagej.ImageJ;
-import net.imagej.Position;
 import net.imagej.display.DatasetView;
 import net.imagej.display.ImageDisplay;
-import net.imagej.interval.DefaultCalibratedRealInterval;
-import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
-import net.imglib2.RandomAccessibleInterval;
-import net.imglib2.iterator.IntervalIterator;
 import net.imglib2.type.numeric.RealType;
 import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.log.LogService;
 import org.scijava.plugin.Parameter;
-import zmbh.commands.ImageJ1PluginAdapter;
 
 /**
  * This class is called from the ImageJ plugin.
@@ -129,16 +112,13 @@ public class MainAppFrame extends JFrame {
         // Init the root layout
         try {
             FXMLLoader loader = new FXMLLoader();
-            //System.out.println(getClass().getResource("/fxml/RootLayout.fxml"));
             loader.setLocation(getClass().getResource("/fxml/RootLayout.fxml"));
-            //AnchorPane anchorPane = (AnchorPane) loader.load();
             BorderPane borderPane = (BorderPane) loader.load();
             
             // Get the controller and add an ImageJ context to it.
             RootLayoutController controller = loader.getController();
             controller.setContext(ij.context());   
             
-            //controller.setDatasetView(datasetView);
             controller.setImageDisplay(imageDisplay);
             
             Future<CommandModule> promise = cmdService.run(GetStackStructure.class, true,
@@ -148,99 +128,8 @@ public class MainAppFrame extends JFrame {
             
             controller.setStructureInfo(structureInfo);
             
-            /*
-            long nbChan = 0;
-            long nbDim = imageDisplay.getActiveView().getData().numDimensions();
-            long chanDimIndex = -1;
-            
-            for(Map.Entry<Integer, AxisInfo> entry : structureInfo.getAxisMap().entrySet()){
-                if(entry.getValue().getAxisType().equals("Channel")){
-                    nbChan = entry.getValue().getAxeDim();
-                    chanDimIndex = entry.getKey();
-                }
-            }
-            ArrayList<Double> minList = new ArrayList<>();
-            ArrayList<Double> maxList = new ArrayList<>();
-            
-            if(nbChan > 0){
-                int[] pos = new int[(int) nbDim];
-                            RandomAccess<? extends RealType<?>> ra = ((Dataset) imageDisplay.getActiveView().getData()).randomAccess();
-                for(int c = 0; c < nbChan; c++){
-                    ra.setPosition(c, (int) chanDimIndex);
-                    Double min = null;
-                    Double max = null;
-                    for(int d = 0; d < nbDim; d++){
-                        if(d != chanDimIndex){
-                            //ra.setPosition(0, d);
-                            for(int d2 = 0; d2 < nbDim; d2++){
-                                if(d2 != d && d2 != chanDimIndex){
-                                    for(int e = 0; e < ((Dataset) imageDisplay.getActiveView().getData()).dimension(d2); e++){
-                                        ra.setPosition(e, d2);
-                                        double value = ra.get().getRealDouble();
-                                        if(min == null){
-                                            min = new Double(value);
-                                        }
-                                        else if(value < min.doubleValue()){
-                                            min = new Double(value);
-                                        }
-                                        if(max == null){
-                                            max = new Double(value);
-                                        }
-                                        else if(value > min.doubleValue()){
-                                            max = new Double(value);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    ra.localize(pos);
-                    for(int k = 0; k < pos.length; k++){
-                        System.out.print(pos[k] + " ");                    
-                    }
-                    System.out.println("");
-                    System.out.println(min);
-                    System.out.println(max);
-                    System.out.println("");
-                    minList.add(min);
-                    maxList.add(max);               
-                }
-                for(int i = 0; i < nbChan; i++){
-                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum(i, maxList.get(i));
-                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum(i, minList.get(i));
-                }
-            }
-            else{
-                Double min = null;
-                Double max = null;
-                Cursor<RealType<?>> cursor = ((Dataset) imageDisplay.getActiveView().getData()).cursor();
-                while(cursor.hasNext()){
-                    cursor.next();
-                    double value = cursor.get().getRealDouble();
-                    if(min == null){
-                        min = new Double(value);
-                    }
-                    else if(value < min.doubleValue()){
-                        min = new Double(value);
-                    }
-                    if(max == null){
-                        max = new Double(value);
-                    }
-                    else if(value > min.doubleValue()){
-                        max = new Double(value);
-                    }
-                }
-                
-                ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum(0, max);
-                ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum(0, min);
-                ((DatasetView) imageDisplay.getActiveView()).rebuild();
-            }
-            
-            */
-            //imageDisplay.setPosition(1, 2);
             imageDisplay.update();
-            
-            
+                        
             long nbChan = -1;
             long chanDimIndex = -1;
             
@@ -253,12 +142,6 @@ public class MainAppFrame extends JFrame {
             
             int[] pos = new int[(int)((DatasetView) imageDisplay.getActiveView()).numDimensions()];
             ((DatasetView) imageDisplay.getActiveView()).localize(pos);
-            /*
-            for(int k = 0; k < pos.length; k++){
-                System.out.print(pos[k] + " ");  
-                System.out.println("");
-            }
-            */
             
             RandomAccess<RealType<?>> ra = ((Dataset) imageDisplay.getActiveView().getData()).randomAccess();
             ra.setPosition(pos);
@@ -285,8 +168,7 @@ public class MainAppFrame extends JFrame {
                     }
                 }
             }
-            //System.out.println(min);
-            //System.out.println(max);
+
             if(nbChan > -1){
                 ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum((int) pos[(int)chanDimIndex], max);
                 ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum((int) pos[(int)chanDimIndex], min);
@@ -303,8 +185,6 @@ public class MainAppFrame extends JFrame {
             SwingFXUtils.toFXImage(image, writableImage);
             controller.getImageView().setImage(writableImage);
             
-            
-
             structureInfo.getAxisMap().entrySet().stream().forEach((entry) -> {
                 if(!entry.getValue().getAxisType().equals("X") && !entry.getValue().getAxisType().equals("Y")){
                     
@@ -331,84 +211,17 @@ public class MainAppFrame extends JFrame {
                             int oldV = Math.round(oldValue.floatValue());                        
                             slider.adjustValue(newV);
                             
-                            if(newV != oldV){
-                                /*
-                                long nbChan = -1;
-                                long chanDimIndex = -1;
-
-                                for(Map.Entry<Integer, AxisInfo> entry : structureInfo.getAxisMap().entrySet()){
-                                    if(entry.getValue().getAxisType().equals("Channel")){
-                                        nbChan = entry.getValue().getAxeDim();
-                                        chanDimIndex = entry.getKey();
-                                    }
-                                }
-
-                                imageDisplay.setPosition(Math.round(newValue.floatValue()) , entry.getKey());                            
-                                imageDisplay.update();
-
-                                int[] pos = new int[(int)((DatasetView) imageDisplay.getActiveView()).numDimensions()];
-                                ((DatasetView) imageDisplay.getActiveView()).localize(pos);
-
-                                RandomAccess<RealType<?>> ra = ((Dataset) imageDisplay.getActiveView().getData()).randomAccess();
-                                ra.setPosition(pos);
-                                int width =  (int) ((Dataset) imageDisplay.getActiveView().getData()).dimension(0);
-                                int heigth =  (int) ((Dataset) imageDisplay.getActiveView().getData()).dimension(1);
-                                Double min = null;
-                                Double max = null;
-                                for(int x = 0; x < width; x++){
-                                    for(int y = 0; y < heigth; y++){
-                                        ra.setPosition(x, 0);
-                                        ra.setPosition(y, 1);
-                                        double value = ra.get().getRealDouble();
-                                        if(min == null){
-                                            min = new Double(value);
-                                        }
-                                        else if(value < min.doubleValue()){
-                                            min = new Double(value);
-                                        }
-                                        if(max == null){
-                                            max = new Double(value);
-                                        }
-                                        else if(value > max.doubleValue()){
-                                            max = new Double(value);
-                                        }
-                                    }
-                                }
-
-                                
-                                if(nbChan > -1){
-                                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum((int) pos[(int)chanDimIndex], max);
-                                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum((int) pos[(int)chanDimIndex], min);                                
-                                }
-                                else{
-                                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMaximum(0, max);
-                                    ((Dataset) imageDisplay.getActiveView().getData()).setChannelMinimum(0, min);
-                                }
-                                ((DatasetView) imageDisplay.getActiveView()).rebuild();
-                                imageDisplay.update();
-
-                                BufferedImage image = ((DatasetView) imageDisplay.getActiveView()).getScreenImage().image();             
-                                WritableImage writableImage = new WritableImage(image.getWidth(), image.getHeight());
-                                SwingFXUtils.toFXImage(image, writableImage);
-                                controller.getImageView().setImage(writableImage);
-                                */
+                            if(newV != oldV){                              
                                 Thread thread = new Thread(new MyThread(structureInfo, imageDisplay, newValue, oldValue, entry, controller));
                                 thread.start();
-                            }
-                            
-                            
+                            }  
                         }                        
                     });
                     
                     controller.getGridPane().addRow(entry.getKey(), label, slider);
-                    
-                    
-                    //controller.getVbox().getChildren().add(
-                        //new HBox(label, slider));
                 }
             });
-            
-            
+
             for(RowConstraints element : controller.getGridPane().getRowConstraints()){
                 element.setValignment(VPos.CENTER);
             }
@@ -440,9 +253,7 @@ public class MainAppFrame extends JFrame {
 
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MainAppFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(MainAppFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

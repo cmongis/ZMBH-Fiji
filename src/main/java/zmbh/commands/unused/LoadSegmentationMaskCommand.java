@@ -1,4 +1,4 @@
-package zmbh.commands.segmentation;
+package zmbh.commands.unused;
 
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;

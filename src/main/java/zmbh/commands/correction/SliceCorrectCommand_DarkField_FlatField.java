@@ -46,7 +46,7 @@ public class SliceCorrectCommand_DarkField_FlatField implements Command {
     
     @Override
     public void run() {  
-        
+        //Convert Dataset to 32Bits
         String inputDatasetEncoding = inputDataset.getTypeLabelLong();        
         if(!inputDatasetEncoding.equals("32-bit signed float")){
             try {
@@ -54,9 +54,7 @@ public class SliceCorrectCommand_DarkField_FlatField implements Command {
                 Future<CommandModule> promise = cmdService.run(ConvertDatasetEncodingCommand.class, true, "inDataset", inputDataset, "targetType", "32-bit signed float");
                 CommandModule promiseContent = promise.get();
                 inputDataset = (Dataset) promiseContent.getOutput("outDataset");
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SliceCorrectCommand_DarkField_FlatField.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
+            } catch (InterruptedException | ExecutionException ex){
                 Logger.getLogger(SliceCorrectCommand_DarkField_FlatField.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -67,6 +65,7 @@ public class SliceCorrectCommand_DarkField_FlatField implements Command {
         long flatFieldWidth = flatFieldDataset.dimension(0);
         long flatFieldHeight = flatFieldDataset.dimension(1);       
         
+        //Darkfield and flatfield correct for this slice
         if(inputWidth == flatFieldWidth && inputHeight == flatFieldHeight){
             RandomAccess<RealType<?>> inputRandomAccess = inputDataset.randomAccess();
             RandomAccess<RealType<?>> flatFieldRandomAccess = flatFieldDataset.randomAccess();

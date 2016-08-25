@@ -45,7 +45,7 @@ public class GetRatioImage implements Command {
     
     @Override
     public void run() {
-        
+        //Create new Dataset for ratio image
         long[] dimensions = new long[2];
         dimensions[0] = stack.dimension(0);
         dimensions[1] = stack.dimension(1);
@@ -62,7 +62,8 @@ public class GetRatioImage implements Command {
         inputRandomAccess1.setPosition(new long[]{0, 0, sliceNum1});
         inputRandomAccess2.setPosition(new long[]{0, 0, sliceNum2});
         outputRandomAccess.setPosition(new long[]{0, 0});
-
+        
+        //Compute ratio for each pixel
         for(int x = 0; x < dimensions[0]; x++){
             for(int y = 0; y < dimensions[1]; y++){
                 inputRandomAccess1.setPosition(x, 0);

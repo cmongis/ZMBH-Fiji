@@ -74,6 +74,7 @@ public class ExtractSliceCommand_AllDir implements Command {
                     }
                 } catch (IOException ex) {
                     Logger.getLogger(ExtractSliceCommand.class.getName()).log(Level.SEVERE, null, ex);
+                    System.err.println("Cannot open file " + file.getPath());
                 } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(ExtractSliceCommand_AllDir.class.getName()).log(Level.SEVERE, null, ex);
                 }

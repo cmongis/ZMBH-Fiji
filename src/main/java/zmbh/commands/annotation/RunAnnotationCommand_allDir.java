@@ -5,7 +5,7 @@
  */
 package zmbh.commands.annotation;
 
-import zmbh.commands.measure.MakeMeasurementsCommand_AllSlices_AllDir;
+import zmbh.commands.unused.MakeMeasurementsCommand_AllSlices_AllDir;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

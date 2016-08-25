@@ -9,15 +9,8 @@ import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
-import org.scijava.command.CommandModule;
-import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
@@ -41,18 +34,9 @@ public class GetBackGroundRoi implements Command {
     
     @Override
     public void run() {
-        ArrayList<ShapeRoi> shapeRoiList = new ArrayList<>();
-        ArrayList<ShapeRoi> xorShapeRoiList = new ArrayList<>();
-        
+        ArrayList<ShapeRoi> shapeRoiList = new ArrayList<>();       
         roiList.forEach((roi) -> shapeRoiList.add(new ShapeRoi(roi)));
         
-         /*
-        shapeRoiList.forEach((roi) -> xorShapeRoiList.add(roi.xor(fullImgRoi)));  
-        if(!xorShapeRoiList.isEmpty()){
-            backgroundRoi = xorShapeRoiList.remove(0);
-            xorShapeRoiList.forEach((roi) -> backgroundRoi = backgroundRoi.xor(roi));
-        }
-        */
         ShapeRoi union = null;    
         if(!shapeRoiList.isEmpty()){
             union = shapeRoiList.remove(0);

@@ -9,14 +9,11 @@ import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.segmentation.CellXseed;
 import zmbh.commands.segmentation.CellRecord;
 import ij.ImagePlus;
-import ij.blob.Blob;
-import ij.blob.ManyBlobs;
 import ij.gui.PolygonRoi;
 import ij.gui.Roi;
 import ij.plugin.Animator;
 import ij.plugin.Zoom;
 import ij.plugin.frame.RoiManager;
-import ij.process.ImageProcessor;
 import io.scif.services.DatasetIOService;
 import java.awt.Point;
 import java.awt.Polygon;
@@ -24,26 +21,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
-import org.jgrapht.alg.HamiltonianCycle;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;
@@ -53,7 +38,6 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 import zmbh.commands.ImageJ1PluginAdapter;
 import zmbh.commands.MyContrastAjuster;
-import zmbh.commands.roi.ComputeConvexHullRoi;
 import zmbh.commands.roi.ConvertPixelIndexToPoint;
 import zmbh.commands.roi.HamiltonianCycleHelper;
 import zmbh.commands.segmentation.LoadCellRecordList;
@@ -63,7 +47,7 @@ import zmbh.commands.segmentation.LoadCellRecordList;
  * @author User
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Validation>CMD HumanEye Validation3", label="")
+@Plugin(type = Command.class)
 public class HumanEyeValidation3 implements Command {
     
     @Parameter

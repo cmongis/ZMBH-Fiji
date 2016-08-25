@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.segmentation;
+package zmbh.commands.unused;
 
 import io.scif.services.DatasetIOService;
 import java.io.File;
@@ -13,7 +13,6 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
-import net.imagej.DatasetService;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;

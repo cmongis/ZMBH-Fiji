@@ -73,7 +73,7 @@ public class MakeMeasurementsV4 implements Command {
     
     @Override
     public void run() {
-        
+        //init
         inDatasetImp.setRoi(roi);       
         analyzer.setup("", inDatasetImp);
         ResultsTable resultTable = Analyzer.getResultsTable();
@@ -84,10 +84,12 @@ public class MakeMeasurementsV4 implements Command {
         GLCM_Texture glcm = new GLCM_Texture();
         glcm.showDialog();
         glcm.rt.reset();
-                
+        
+        //Measure for each slice
         for(int sliceNumber = 0; sliceNumber < nbSlice; sliceNumber++){
             try {                
                 ImagePlus sliceDatasetImp = null;
+                //Get the bounding square part of the cell for glcm measures
                 if(roiDataset != null){
                     Future<CommandModule> promise = cmdService.run(ExtractSliceCommand.class, true, "inputDataset", roiDataset, "sliceNumber", sliceNumber);
                     CommandModule promiseContent = promise.get();
@@ -96,6 +98,7 @@ public class MakeMeasurementsV4 implements Command {
                     sliceDatasetImp = ImageJ1PluginAdapter.unwrapDataset(sliceDataset);
                     sliceDatasetImp.resetDisplayRange();
                 }
+                //Regular measure
                 inDatasetImp.setPosition(sliceNumber+1, 1, 1);
                 analyzer.measure();
                 resultTable.show("Results");
@@ -103,9 +106,7 @@ public class MakeMeasurementsV4 implements Command {
                     // Get Haralick features
                     glcm.run(sliceDatasetImp.getProcessor().convertToByteProcessor(true));  
                 }
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MakeMeasurementsV4.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
+            } catch (InterruptedException | ExecutionException ex) {
                 Logger.getLogger(MakeMeasurementsV4.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

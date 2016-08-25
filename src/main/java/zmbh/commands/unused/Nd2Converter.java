@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands;
+package zmbh.commands.unused;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +13,15 @@ import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import zmbh.commands.RunRScript;
+import zmbh.commands.test;
 
 /**
  *
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Util>nd2 converter")
+@Plugin(type = Command.class)
 public class Nd2Converter implements Command {
     
     @Parameter(type = ItemIO.INPUT)

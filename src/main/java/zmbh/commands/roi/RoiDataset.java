@@ -7,7 +7,6 @@ package zmbh.commands.roi;
 
 import ij.gui.Roi;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import net.imagej.axis.Axes;
@@ -42,7 +41,7 @@ public class RoiDataset implements Command {
     @Parameter(type = ItemIO.OUTPUT)
     long time1;
     
-    
+    //Get bounding square dataset arround a cell
     @Override
     public void run() {
         long startRoiDataset = System.nanoTime();
@@ -63,10 +62,7 @@ public class RoiDataset implements Command {
 
         inputRandomAccess.setPosition(new long[]{0, 0, 0});
         outputRandomAccess.setPosition(new long[]{0, 0, 0});
-        
-        
-        
-        
+
         startRoiDataset = System.nanoTime();
         
         for(int x = bounds.x; x < (bounds.x + dimensions[0]); x++){

@@ -87,9 +87,7 @@ public class MapImageData implements Command {
                     Roi roi = (Roi) promiseContent.getOutput("roi");
                     roiList.add(roi);
                     
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -110,9 +108,7 @@ public class MapImageData implements Command {
             for(CellRecord record : cellRecordList){
                 datamap.put(record, data);
             }
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MapImageData.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(MapImageData.class.getName()).log(Level.SEVERE, null, ex);
         }
         

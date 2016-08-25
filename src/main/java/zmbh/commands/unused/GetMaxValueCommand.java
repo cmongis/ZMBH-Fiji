@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands;
+package zmbh.commands.unused;
 
 import net.imagej.Dataset;
 import net.imglib2.Cursor;
-import net.imglib2.RandomAccess;
 import net.imglib2.type.numeric.RealType;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;

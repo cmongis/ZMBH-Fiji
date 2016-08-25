@@ -32,7 +32,8 @@ public class ComputeConvexHullRoi implements Command {
     @Override
     public void run() {
         List<Point> convexHull = GrahamScan.getConvexHull(pointArray);
-               
+        
+        //Arrange coordinates in arrays for Polygon constructor
         int[] xPoints = new int[convexHull.size()];
         int[] yPoints = new int[convexHull.size()];
         int nPoints = convexHull.size();

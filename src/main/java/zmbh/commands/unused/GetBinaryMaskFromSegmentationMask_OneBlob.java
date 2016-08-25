@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.segmentation;
+package zmbh.commands.unused;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;

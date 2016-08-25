@@ -10,7 +10,7 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.2.1:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Xmx8g -Dscijava.log.level=error -classpath %classpath ${packageClassName}</exec.args>
+                <exec.args>-Xmx8g -Dscijava.log.level=error -classpath %classpath sc.fiji.Main</exec.args>
                 <exec.executable>java</exec.executable>
             </properties>
         </action>

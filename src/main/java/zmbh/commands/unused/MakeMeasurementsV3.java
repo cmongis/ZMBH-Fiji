@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.measure;
+package zmbh.commands.unused;
 
 import ij.ImagePlus;
 import ij.gui.PolygonRoi;

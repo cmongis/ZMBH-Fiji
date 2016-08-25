@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.measure;
+package zmbh.commands.unused;
 
 import ij.ImagePlus;
 import ij.blob.Blob;
@@ -33,8 +33,7 @@ import org.scijava.display.DisplayService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
-import zmbh.commands.segmentation.GetBinaryMaskFromSegmentationMask_OneBlob;
-import zmbh.commands.GetMaxValueCommand;
+import zmbh.commands.unused.GetMaxValueCommand;
 import zmbh.commands.ImageJ1PluginAdapter;
 
 /**

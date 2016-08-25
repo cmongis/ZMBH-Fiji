@@ -9,15 +9,8 @@ import ij.gui.Roi;
 import ij.gui.ShapeRoi;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
-import org.scijava.command.CommandModule;
-import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 

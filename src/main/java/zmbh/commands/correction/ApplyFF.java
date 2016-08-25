@@ -74,11 +74,7 @@ public class ApplyFF implements Command {
                     inputStackDataset = (Dataset) promiseContent.getOutput("inputDataset");
                     
                     datasetioService.save(inputStackDataset, saveDir.getPath() + "/" + inputStackDataset.getName());
-                } catch (IOException ex) {
-                    Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     Logger.getLogger(GetFFImg.class.getName()).log(Level.SEVERE, null, ex);
                 }
         

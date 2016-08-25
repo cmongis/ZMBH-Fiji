@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.commands.segmentation;
+package zmbh.commands.unused;
 
 import com.jmatio.io.MatFileReader;
 import com.jmatio.types.MLArray;
@@ -19,6 +19,7 @@ import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import zmbh.commands.segmentation.CellXseed;
 
 /**
  *
@@ -89,7 +90,6 @@ public class LoadCellList implements Command {
                 
                 cellxSeedList.add(segCell);
             }
-            
             
         } catch (IOException ex) {
             Logger.getLogger(LoadCellList.class.getName()).log(Level.SEVERE, null, ex);

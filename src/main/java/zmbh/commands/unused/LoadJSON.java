@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package zmbh.config;
+package zmbh.commands.unused;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
@@ -14,6 +14,7 @@ import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
+import zmbh.config.StructureInfo;
 
 /**
  *

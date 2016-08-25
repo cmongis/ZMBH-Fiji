@@ -7,38 +7,28 @@ package zmbh.commands.annotation;
 
 import zmbh.commands.segmentation.LoadCellXseedList;
 import zmbh.commands.segmentation.CellXseed;
-import zmbh.commands.segmentation.CellRecord;
-import zmbh.commands.annotation.AnnotationCommand;
-import ij.plugin.ImagesToStack;
 import io.scif.services.DatasetIOService;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.imagej.Dataset;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 import org.scijava.ItemIO;
 import org.scijava.command.Command;
 import org.scijava.command.CommandModule;
 import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
-import zmbh.commands.segmentation.LoadCellRecordList;
 
 /**
  *
  * @author Potier Guillaume, 2016
  */
 
-@Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>RUN Annotation 2", label="")
+@Plugin(type = Command.class, menuPath = "Dev-commands>Annotation>RUN Annotation 2 (1 color)", label="")
 public class RunAnnotationCommand2 implements Command {
     
     @Parameter
@@ -60,24 +50,17 @@ public class RunAnnotationCommand2 implements Command {
         Future<CommandModule> promise;
         CommandModule promiseContent;
         try {
-            
-            
             Dataset inDataset = ioService.open(inDatasetFile.getPath());
             
             // Load list of segmented cells
             promise = cmdService.run(LoadCellXseedList.class, false, "cellFile", cellFile);
             promiseContent = promise.get();
             ArrayList<CellXseed> cellxSeedList = (ArrayList<CellXseed>) promiseContent.getOutput("cellxSeedList");
-            
-            
+                        
             promise = cmdService.run(AnnotationCommand2.class, true,"inDataset", inDataset, "cellxSeedList", cellxSeedList);
             promiseContent = promise.get();
             
-        } catch (InterruptedException ex) {
-            Logger.getLogger(RunAnnotationCommand2.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(RunAnnotationCommand2.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
+        } catch (InterruptedException | ExecutionException | IOException ex) {
             Logger.getLogger(RunAnnotationCommand2.class.getName()).log(Level.SEVERE, null, ex);
         }
         

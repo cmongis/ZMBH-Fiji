@@ -25,7 +25,6 @@ import net.imagej.Dataset;
 import net.imagej.DatasetService;
 import net.imagej.axis.Axes;
 import net.imagej.axis.AxisType;
-import net.imagej.axis.CalibratedAxis;
 import net.imglib2.RandomAccess;
 import net.imglib2.type.numeric.RealType;
 import org.scijava.ItemIO;
@@ -35,7 +34,6 @@ import org.scijava.command.CommandService;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 import zmbh.commands.ImageJ1PluginAdapter;
-import zmbh.commands.annotation.AnnotationCommand;
 import zmbh.commands.roi.ComputeConvexHullRoi;
 import zmbh.commands.roi.ConvertPixelIndexToPoint;
 import zmbh.commands.roi.GetBackGroundRoi;
@@ -77,18 +75,18 @@ public class GetBackgroundCorrectedImages implements Command {
         
         File[] cellFileList = cellDir.listFiles((File pathname) -> pathname.getName().endsWith(".mat"));
         File[] fileStackList = stackDir.listFiles((File pathname) -> pathname.getName().endsWith(".tif"));
-        
-        
-        
+                
         if(fileStackList.length == cellFileList.length){
             for(int i = 0; i < fileStackList.length; i++){
                 try {
                     Dataset inDataset = ioService.open(fileStackList[i].getPath());
-
+                    
+                    //Load Segmentation info
                     Future<CommandModule> promise = cmdService.run(LoadCellXseedList.class, false, "cellFile", cellFileList[i]);
                     CommandModule promiseContent = promise.get();
                     ArrayList<CellXseed> cellxSeedList = (ArrayList<CellXseed>) promiseContent.getOutput("cellxSeedList");
-
+                    
+                    // Get all ROI on the image
                     ArrayList<Roi> roiList = new ArrayList<>();
                     for(CellXseed cellxSeed : cellxSeedList){
                         promise = cmdService.run(ConvertPixelIndexToPoint.class, false, "imgHeigth", (int) inDataset.dimension(1), "perimeterPixelListIndex", cellxSeed.getPerimeterPixelListIndex());
@@ -99,9 +97,11 @@ public class GetBackgroundCorrectedImages implements Command {
                         Roi roi = (Roi) promiseContent.getOutput("roi");
                         roiList.add(roi);
                     }
-
+                    
+                    //Get the ROI of the full image
                     ShapeRoi fullImgRoi = new ShapeRoi(new Roi(0,0, inDataset.dimension(0), inDataset.dimension(1)));
-
+                    
+                    //Get the background ROI
                     promise = cmdService.run(GetBackGroundRoi.class, false, "fullImgRoi", fullImgRoi, "roiList", roiList);
                     promiseContent = promise.get();
                     ShapeRoi backgroundRoi = (ShapeRoi) promiseContent.getOutput("backgroundRoi");
@@ -110,7 +110,8 @@ public class GetBackgroundCorrectedImages implements Command {
                     Analyzer.setMeasurement(Measurements.MEAN, true);
 
                     ImagePlus inDatasetImp = ImageJ1PluginAdapter.unwrapDataset(inDataset);
-
+                    
+                    //Perform measurements on background ROI
                     inDatasetImp.setRoi(backgroundRoi);
                     analyzer.setup("", inDatasetImp);
                     ResultsTable resultTable = Analyzer.getResultsTable();
@@ -128,12 +129,15 @@ public class GetBackgroundCorrectedImages implements Command {
                         backGroundvalueList.add(backgroundValue);                        
                         System.out.println("backgroundValue = " + backgroundValue);
                     }
-                    //
+                    
                     inDatasetImp.deleteRoi();      
                     
                     long inputWidth = inDataset.dimension(0);
                     long inputHeight = inDataset.dimension(1);
                     
+                    //Create a new Dataset
+                    //Copy pixel values
+                    //Substract background averageValue
                     long[] dimensions = new long[inDataset.numDimensions()];
                     inDataset.dimensions(dimensions);
                     AxisType[] axes = new AxisType[]{Axes.X, Axes.Y, Axes.Z};
@@ -163,11 +167,7 @@ public class GetBackgroundCorrectedImages implements Command {
                     
                     
                     ioService.save(outStack, saveDir + "/" + outStack.getName());
-                } catch (IOException ex) {
-                    Logger.getLogger(GetBackgroundCorrectedImages.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(GetBackgroundCorrectedImages.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (IOException | InterruptedException | ExecutionException ex) {
                     Logger.getLogger(GetBackgroundCorrectedImages.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }

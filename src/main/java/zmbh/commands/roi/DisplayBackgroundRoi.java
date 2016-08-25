@@ -63,10 +63,12 @@ public class DisplayBackgroundRoi implements Command {
             Future<CommandModule> promise;
             CommandModule promiseContent;
             
+            //Get segmentation info
             promise = cmdService.run(LoadCellXseedList.class, false, "cellFile", cellFile);
             promiseContent = promise.get();
             ArrayList<CellXseed> cellxSeedList = (ArrayList<CellXseed>) promiseContent.getOutput("cellxSeedList");
             
+            //get roi list
             ArrayList<Roi> roiList = new ArrayList<>();       
             for(CellXseed cellxSeed : cellxSeedList){
                 try {
@@ -79,9 +81,7 @@ public class DisplayBackgroundRoi implements Command {
                     promiseContent = promise.get();
                     Roi roi = (Roi) promiseContent.getOutput("roi");
                     roiList.add(roi);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
+                } catch (InterruptedException | ExecutionException ex) {
                     Logger.getLogger(AnnotationCommand.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -114,11 +114,7 @@ public class DisplayBackgroundRoi implements Command {
             roiManager.addRoi(imagePlus.getRoi());
             roiManager.select(0);
             
-        } catch (IOException ex) {
-            Logger.getLogger(DisplayBackgroundRoi.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(DisplayBackgroundRoi.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (IOException | InterruptedException | ExecutionException ex) {
             Logger.getLogger(DisplayBackgroundRoi.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

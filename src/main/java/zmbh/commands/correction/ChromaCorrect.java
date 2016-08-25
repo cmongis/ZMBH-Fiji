@@ -8,7 +8,6 @@ package zmbh.commands.correction;
 import bunwarpj.Transformation;
 import ij.ImagePlus;
 import io.scif.services.DatasetIOService;
-import java.io.File;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
@@ -94,9 +93,7 @@ public class ChromaCorrect implements Command {
             outStack = (Dataset) promiseContent.getOutput("outStack");
             
             
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ChromaCorrect.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
+        } catch (InterruptedException | ExecutionException ex) {
             Logger.getLogger(ChromaCorrect.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
